@@ -1,0 +1,43 @@
+# Abhängigkeiten und Build
+node_modules
+dist
+dist-ssr
+dev-dist
+*.tsbuildinfo
+
+# Tests
+coverage
+playwright-report
+test-results
+blob-report
+playwright/.cache
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Umgebung und lokale Einstellungen
+.env
+.env.*
+!.env.example
+*.local
+.claude/settings.local.json
+
+# Private Daten: eigene Grundrisse und Projekte kommen nie ins Repo.
+# In fixtures/ liegen nur frei lizenzierte Testpläne.
+fixtures/private/
+private/
+*.wandelbar
+!fixtures/**/*.wandelbar
+
+# Editor und System
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+*.sw?
+
+# Lokale Startkonfiguration der Claude-Vorschau (rechnerspezifischer Pfad)
+.claude/launch.json
