@@ -1,0 +1,42 @@
+/* Vorläufige Grundstile für das leere Gerüst. Das Design-System folgt in der Designphase (MD). */
+
+:root {
+  color-scheme: light dark;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  line-height: 1.5;
+  background-color: Canvas;
+  color: CanvasText;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+}
+
+.placeholder {
+  max-width: 36rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.placeholder h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2.25rem, 7vw, 3.5rem);
+  letter-spacing: -0.02em;
+}
+
+.preview-note {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid currentColor;
+  border-radius: 0.5rem;
+  text-align: start;
+}
