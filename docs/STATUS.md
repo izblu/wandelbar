@@ -1,6 +1,6 @@
 # Status – Wandelbar
 
-**Stand:** 2026-11-13 – MD Runde 1 abgeschlossen, Richtung A „Morgenlicht“ gewählt. Als Nächstes Runde 2.
+**Stand:** 2026-11-13 – MD Runde 2 abgeschlossen, Verfeinerung A4 „Sonnenstand“ gewählt. Als Nächstes das Design-System.
 
 ## Erledigt
 
@@ -32,15 +32,35 @@
 - Auf Wunsch zusätzlich gezeigt: die Mischung „A mit Anleihen“ (`a-mix.html`, `styles/a-mix.css`): dunkle Wandschnitte und kräftige Maßzahlen aus B, federnde Rückmeldung aus C.
 - **Wahl des Nutzers: A „Morgenlicht“ pur**, ohne die Anleihen aus B und C.
 
-### Als Nächstes: Runde 2
+### Runde 2 – erledigt (2026-11-13)
 
-2–3 Verfeinerungen von A „Morgenlicht“ (Farben, Schrift, Details), wieder als HTML in `design/explorations/` mit Vergleich in der Browser-Vorschau. Ansatzpunkte aus der Bewertung von Runde 1:
+- Drei Verfeinerungen von A am Bildschirm „Einrichten“, je für PC und Handy, hell und dunkel. Jede Variante lädt `styles/a-morgenlicht.css` und danach ein eigenes Stylesheet mit den Unterschieden. Der Vergleich mit A pur liegt in `runde-2.html` und ist von `index.html` aus verlinkt.
+  - **A2 „Frühlicht“** (kühler und klarer): Porzellan, Nachtblau, Petrol, Albert Sans im leichten Schnitt, feineres Milchglas mit Glaskante, scharfe Fensterbilder.
+  - **A3 „Honiglicht“** (wärmer und wohnlicher): Kalkputz, Umbra, Moosgrün, kräftiger Schnitt, Lichtstrahlen mit schwebendem Staub, abends Lampeninseln im Halbdunkel.
+  - **A4 „Sonnenstand“** (deckend, Licht als Werkzeug): Farben und Schrift wie A, deckende Flächen statt Milchglas, Tageszeit-Regler (6–22 Uhr). Die Sonne wandert durch die Fenster, ab Sonnenuntergang leuchten die Lampen.
+- Neue Lichtberechnung in `shared/dollhouse.js` (D-017). Sie greift nur, wenn das CSS `--light-model: windows` setzt. A, B und C aus Runde 1 bleiben unverändert.
+- axe (WCAG 2.2 AA): 0 Verstöße in allen Varianten, PC und Handy, hell und dunkel, auch mit offener Befehlssuche und bei A4 am Abend. Runde 1 erneut geprüft, ebenfalls 0. Keine Konsolenfehler, keine fremden Anfragen. Keine neuen Schriften oder Dateien.
+- Das Vergleichsbild (alle Varianten gegen A pur, PC/Handy, hell/dunkel, Sofa-Ausschnitt) wurde dem Nutzer gezeigt. Es liegt nicht im Repo.
+- **Wahl des Nutzers: A4 „Sonnenstand“**, wie empfohlen.
 
-- Die Licht-Signatur ist noch zu zart. Sonnenflecken und Lampenkegel deutlicher und eigenständiger gestalten.
-- A wirkt auf den ersten Blick am wenigsten eigenständig. Varianten in Farbton (wärmer/kühler), Akzentfarbe und Schriftschnitt prüfen.
-- Milchglas (`backdrop-filter`) kostet auf Android-Mittelklasse Leistung, wenn darunter echtes 3D läuft. Eine Variante mit deckenden Flächen zeigen.
+**Was aus der Wahl folgt:**
 
-Danach: Design-System (Tokens, Icons, Bausteine), klickbarer Prototyp im echten Stack, Feedback. Der Skill `frontend-design` wird genutzt.
+- Deckende Flächen sind gesetzt: kein `backdrop-filter` über dem 3D. Kanten entstehen durch eine feine Linie und Schatten.
+- Farben und Schrift bleiben wie in A: Kalkweiß, Schiefer, Fjordblau, Eiche und eine etwas sattere Sonne (`#f5cf68`). Dazu Albert Sans in mittleren Gewichten.
+- **Planergänzung, vor dem Funktionsbau mit dem Nutzer bestätigen:**
+  - Licht als Werkzeug braucht die Nordrichtung des Grundrisses, z. B. im Schritt „Grundriss“ oder „Bauen“.
+  - Dazu kommt ein Sonnenstand im 3D: gerichtetes Licht nach Uhrzeit und Datum, abends Lampen.
+  - Die Leistung auf Android-Mittelklasse ist dabei zu prüfen, z. B. Schattenwurf nur auf Wunsch.
+
+### Als Nächstes: Design-System
+
+Auf Grundlage von A4 „Sonnenstand“ (`design/explorations/a4-sonnenstand.html`, Stylesheets `a-morgenlicht.css` und `a4-sonnenstand.css`):
+
+1. **Tokens** als CSS-Variablen: Farben hell/dunkel, Typografie (Albert Sans, Skala, Gewichte), Abstände, Radien, Schatten und Kanten, Bewegung (`--ease`, Dauer, reduzierte Bewegung).
+2. **Icons:** einheitlicher Satz auf Basis von `shared/icons.svg`, Entscheidung Lucide oder Phosphor laut Plan.
+3. **Bausteine:** Schrittleiste, Werkzeugpalette, Ansichtsleiste mit Tageszeit-Regler, Eigenschaftenkarte und Handy-Karte, Befehlssuche, Felder, Farbfelder, Knöpfe.
+
+Danach folgt der klickbare Prototyp der Kernabläufe im echten Stack (Vite, React), dann das Feedback des Nutzers. Der Skill `frontend-design` wird weiter genutzt.
 
 ## Offene Punkte
 
