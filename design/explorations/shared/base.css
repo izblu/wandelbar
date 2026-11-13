@@ -1,0 +1,354 @@
+/*
+ * Gemeinsame Grundlage aller Entwürfe: Reset, Hilfsklassen und die Mechanik von Puppenhaus,
+ * Eigenschaftenkarte, Handy-Karte und Befehlssuche. Das Aussehen legt jede Richtung selbst fest,
+ * vor allem über die Variablen (Tokens) auf :root.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+p,
+dl,
+dd,
+ol,
+ul,
+fieldset,
+figure {
+  margin: 0;
+  padding: 0;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+fieldset {
+  border: 0;
+  min-width: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+kbd {
+  font: inherit;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.icon {
+  width: var(--icon-size, 1.25rem);
+  height: var(--icon-size, 1.25rem);
+  flex: none;
+  stroke-width: var(--icon-stroke, 1.75);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Hell- und Dunkel-Varianten einzelner Texte */
+:root[data-theme='dark'] .only-light,
+:root:not([data-theme='dark']) .only-dark {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- Bühne */
+
+.stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.house,
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.overlay {
+  pointer-events: none;
+}
+
+.house {
+  user-select: none;
+}
+
+/* ---------------------------------------------------------------- Puppenhaus */
+
+.house .b .t {
+  fill: var(--c);
+}
+.house .b .sy {
+  fill: color-mix(in oklab, var(--c), var(--shade, #000) var(--shade-sy, 12%));
+}
+.house .b .ex {
+  fill: color-mix(in oklab, var(--c), var(--shade, #000) var(--shade-ex, 24%));
+}
+
+.house .m-base {
+  --c: var(--mat-base);
+}
+.house .m-wall {
+  --c: var(--mat-wall);
+}
+.house .m-wall .t {
+  fill: var(--mat-wall-cap, var(--c));
+}
+.house .m-glass {
+  --c: var(--mat-glass);
+}
+.house .m-glass polygon {
+  fill-opacity: var(--glass-opacity, 0.6);
+}
+.house .m-fabric {
+  --c: var(--mat-fabric);
+}
+.house .m-fabric2 {
+  --c: var(--mat-fabric2);
+}
+.house .m-wood {
+  --c: var(--mat-wood);
+}
+.house .m-wood2 {
+  --c: var(--mat-wood2, var(--mat-wood));
+}
+.house .m-white {
+  --c: var(--mat-white);
+}
+.house .m-metal {
+  --c: var(--mat-metal);
+}
+.house .m-stone {
+  --c: var(--mat-stone);
+}
+.house .m-steel {
+  --c: var(--mat-steel, var(--mat-metal));
+}
+.house .m-black {
+  --c: var(--mat-black);
+}
+.house .m-screen {
+  --c: var(--mat-screen);
+}
+.house .m-shade {
+  --c: var(--mat-shade);
+}
+.house .m-linen {
+  --c: var(--mat-linen);
+}
+.house .m-duvet {
+  --c: var(--mat-duvet);
+}
+.house .m-ceramic {
+  --c: var(--mat-ceramic);
+}
+.house .m-water {
+  --c: var(--mat-water);
+}
+.house .m-pot {
+  --c: var(--mat-pot);
+}
+.house .m-plant {
+  --c: var(--mat-plant);
+}
+
+.house .cushion .t {
+  fill: color-mix(in oklab, var(--c), #fff var(--cushion-light, 8%));
+}
+.house .blob .hl {
+  fill: color-mix(in oklab, var(--c), #fff 22%);
+  opacity: 0.6;
+}
+.house .it {
+  cursor: pointer;
+}
+
+.house .floor-wood {
+  fill: var(--floor-wood);
+}
+.house .floor-tile {
+  fill: var(--floor-tile);
+}
+.house .floor-lines line {
+  stroke: var(--floor-line, transparent);
+  stroke-width: 1;
+}
+
+.house .rug-1 {
+  fill: var(--rug-1, transparent);
+}
+.house .rug-2 {
+  fill: var(--rug-2, transparent);
+}
+.house .rug-3 {
+  fill: var(--rug-3, transparent);
+}
+.house .rug-4 {
+  fill: var(--rug-4, transparent);
+}
+
+.house .sun,
+.house .glows,
+.house .supers,
+.house .doors,
+.house .shadows,
+.house .model-shadow {
+  display: none;
+}
+
+.house .label-bg {
+  fill: none;
+}
+
+.house .dim line {
+  stroke: var(--dim, currentColor);
+  stroke-width: 1.25;
+}
+.house .dim-label rect {
+  fill: var(--dim-bg, #fff);
+}
+.house .dim-label text {
+  fill: var(--dim-ink, currentColor);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+:root[data-view='plan'] .house .labels .label-area {
+  display: inline;
+}
+
+/* ---------------------------------------------------------------- Eigenschaftenkarte */
+
+.inspector {
+  position: absolute;
+  z-index: 20;
+}
+
+.sheet-handle {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .inspector {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    max-height: 86dvh;
+    overflow: hidden auto;
+    overscroll-behavior: contain;
+    transform: translateY(calc(100% - var(--peek, 180px)));
+    transition: transform 0.42s var(--ease-sheet, cubic-bezier(0.2, 0.8, 0.2, 1));
+    touch-action: pan-y;
+  }
+  .inspector[data-sheet='open'] {
+    transform: none;
+  }
+  .inspector.is-dragging {
+    transition: none;
+  }
+  .sheet-handle {
+    display: block;
+  }
+}
+
+/* ---------------------------------------------------------------- Befehlssuche */
+
+.cmdk {
+  padding: 0;
+  border: 0;
+  width: min(640px, calc(100vw - 32px));
+  max-width: none;
+  margin: 12vh auto auto;
+  overflow: hidden;
+}
+
+.cmdk [role='listbox'] {
+  max-height: min(420px, 52vh);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.cmd-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.cmd-label {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 720px) {
+  .cmdk {
+    margin: 10px auto auto;
+  }
+}
+
+/* ---------------------------------------------------------------- Bewegung */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

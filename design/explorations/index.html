@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self'; img-src 'self' blob: data:; worker-src 'self' blob:; script-src 'self' 'wasm-unsafe-eval'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Designrichtungen, Runde 1 – Wandelbar</title>
+    <link rel="stylesheet" href="shared/overview.css" />
+    <script type="module" src="shared/overview.js"></script>
+  </head>
+  <body>
+    <header class="intro">
+      <p class="eyebrow">Wandelbar · Designphase MD · Runde 1</p>
+      <h1>Drei Richtungen für den Schritt „Einrichten“</h1>
+      <p class="lede">
+        Jede Richtung zeigt dasselbe Bedienkonzept: Schrittleiste, schwebende Werkzeugpalette,
+        Eigenschaften direkt am ausgewählten Sofa, Befehlssuche mit Strg+K und auf dem Handy eine
+        ausziehbare Karte von unten. Die Wohnung ist eine stilisierte SVG-Darstellung, kein echtes
+        3D. Alles läuft lokal ohne fremde Quellen.
+      </p>
+      <div class="controls">
+        <div class="theme-switch" role="group" aria-label="Design der Vorschauen">
+          <button type="button" data-theme-choice="light" aria-pressed="true">Hell</button>
+          <button type="button" data-theme-choice="dark" aria-pressed="false">Dunkel</button>
+        </div>
+        <p class="hint">
+          Die Vorschauen sind bedienbar: Möbel anklicken, Bezug wählen, Strg+K drücken.
+        </p>
+      </div>
+    </header>
+
+    <main>
+      <section class="direction" aria-labelledby="dir-a">
+        <div class="about">
+          <p class="letter">A</p>
+          <h2 id="dir-a">Morgenlicht</h2>
+          <p class="tagline">ruhig, hell und wohnlich</p>
+          <ul class="chips" aria-label="Farben">
+            <li class="chip c-a1">Kalkweiß</li>
+            <li class="chip c-a2">Schiefer</li>
+            <li class="chip c-a3">Fjordblau</li>
+            <li class="chip c-a4">Eiche</li>
+            <li class="chip c-a5">Morgensonne</li>
+          </ul>
+          <dl>
+            <dt>Schrift</dt>
+            <dd>
+              Albert Sans: eine ruhige Grotesk mit skandinavischem Einschlag, wenige Gewichte, viel
+              Luft.
+            </dd>
+            <dt>Formen</dt>
+            <dd>
+              Milchglas, große Radien, weiche lange Schatten. Das Modell wirkt wie ein weißes
+              Architekturmodell auf heller Eiche.
+            </dd>
+            <dt>Bewegung</dt>
+            <dd>
+              Langsam und weich. Die Karte gleitet ein, die Sonnenflecken wandern kaum merklich.
+            </dd>
+            <dt>Signatur</dt>
+            <dd>
+              Licht: tagsüber Sonne durch die Ostfenster, im dunklen Modus warme Lichtkegel der
+              Lampen.
+            </dd>
+          </dl>
+          <p class="open"><a href="a-morgenlicht.html">Richtung A im ganzen Fenster öffnen</a></p>
+        </div>
+        <div class="frames">
+          <div class="frame frame-desktop" data-width="1440" data-height="900">
+            <iframe src="a-morgenlicht.html" title="Richtung A am PC" loading="lazy"></iframe>
+          </div>
+          <div class="frame frame-phone" data-width="390" data-height="844">
+            <iframe src="a-morgenlicht.html" title="Richtung A am Handy" loading="lazy"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section class="direction" aria-labelledby="dir-b">
+        <div class="about">
+          <p class="letter">B</p>
+          <h2 id="dir-b">Supergrafik</h2>
+          <p class="tagline">mutig und editorial</p>
+          <ul class="chips" aria-label="Farben">
+            <li class="chip c-b1">Kobalt</li>
+            <li class="chip c-b2">Papier</li>
+            <li class="chip c-b3">Tinte</li>
+            <li class="chip c-b4">Rosa</li>
+          </ul>
+          <dl>
+            <dt>Schrift</dt>
+            <dd>
+              Archivo: extra schmal und schwarz für Überschriften, normal breit für die Bedienung.
+              Versalien, große Zahlen.
+            </dd>
+            <dt>Formen</dt>
+            <dd>
+              Harte Kanten, dicke Linien, schwarz gefüllte Wandschnitte wie in der Bauzeichnung. Die
+              Karte ist eine Bildunterschrift mit Führungslinie.
+            </dd>
+            <dt>Bewegung</dt>
+            <dd>Schnell und entschieden. Die Karte klappt auf, die Führungslinie zeichnet sich.</dd>
+            <dt>Signatur</dt>
+            <dd>Raumnamen als riesige Bodenschrift im Modell, dazu eine Magazin-Überschrift.</dd>
+          </dl>
+          <p class="open"><a href="b-supergrafik.html">Richtung B im ganzen Fenster öffnen</a></p>
+        </div>
+        <div class="frames">
+          <div class="frame frame-desktop" data-width="1440" data-height="900">
+            <iframe src="b-supergrafik.html" title="Richtung B am PC" loading="lazy"></iframe>
+          </div>
+          <div class="frame frame-phone" data-width="390" data-height="844">
+            <iframe src="b-supergrafik.html" title="Richtung B am Handy" loading="lazy"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section class="direction" aria-labelledby="dir-c">
+        <div class="about">
+          <p class="letter">C</p>
+          <h2 id="dir-c">Spielhaus</h2>
+          <p class="tagline">verspielt und farbig</p>
+          <ul class="chips" aria-label="Farben">
+            <li class="chip c-c1">Flieder</li>
+            <li class="chip c-c2">Pflaume</li>
+            <li class="chip c-c3">Violett</li>
+            <li class="chip c-c4">Tomate</li>
+            <li class="chip c-c5">Butter</li>
+            <li class="chip c-c6">Minze</li>
+          </ul>
+          <dl>
+            <dt>Schrift</dt>
+            <dd>Fredoka (rund) für Überschriften und Knöpfe, Nunito für Text und Zahlen.</dd>
+            <dt>Formen</dt>
+            <dd>
+              Dicke Umrisse, runde Ecken, jeder Raum mit eigener Bodenfarbe, Beschriftungen als
+              Aufkleber, Knöpfe mit Unterkante zum Drücken.
+            </dd>
+            <dt>Bewegung</dt>
+            <dd>
+              Federnd. Das ausgewählte Sofa hüpft, Werkzeuge wackeln beim Überfahren, die Karte
+              springt auf.
+            </dd>
+            <dt>Signatur</dt>
+            <dd>Möbel als bunte Bauklötze in einem Spielzeughaus.</dd>
+          </dl>
+          <p class="open"><a href="c-spielhaus.html">Richtung C im ganzen Fenster öffnen</a></p>
+        </div>
+        <div class="frames">
+          <div class="frame frame-desktop" data-width="1440" data-height="900">
+            <iframe src="c-spielhaus.html" title="Richtung C am PC" loading="lazy"></iframe>
+          </div>
+          <div class="frame frame-phone" data-width="390" data-height="844">
+            <iframe src="c-spielhaus.html" title="Richtung C am Handy" loading="lazy"></iframe>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p>
+        Schriften: Albert Sans, Archivo, Fredoka und Nunito, alle unter der SIL Open Font License
+        1.1, lokal unter <code>fonts/</code>.
+      </p>
+    </footer>
+  </body>
+</html>

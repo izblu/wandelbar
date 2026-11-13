@@ -64,3 +64,20 @@ Ein schlichtes Grundriss-Symbol (`public/favicon.svg`), die PNGs werden mit `scr
 ### D-013 Zeilenenden und Node-Version
 
 `.gitattributes` erzwingt LF, passend zu Prettier, auch unter Windows. `.node-version` (26) steuert die Node-Version in CI.
+
+## MD Designphase (2026-11-13)
+
+### D-014 Entwürfe als reine HTML-Seiten mit gemeinsamer Grundlage
+
+Die Designrichtungen liegen in `design/explorations/` als eigenständige HTML-Seiten ohne Build: je Richtung eine Seite und ein Stylesheet (`styles/`), dazu gemeinsame Teile in `shared/`. `dollhouse.js` zeichnet die Beispielwohnung „Lindenstraße 12“ als Puppenhaus in SVG (eigene Projektion, topologisch sortierte Quader). `explore.js` übernimmt die Bedienung: Auswahl, Karte am Möbel, Strg+K, Handy-Karte, hell/dunkel.
+**Grund:** Alle drei Richtungen zeigen exakt dieselbe Wohnung und dieselben Abläufe. Unterschiede entstehen nur durch Gestaltung, das macht den Vergleich fair. Jede Seite trägt die CSP der App und kommt ohne Inline-Skripte und `style`-Attribute aus.
+**Folgen:** Die Entwürfe gehören nicht zum App-Build. ESLint prüft `design/**/*.js` mit Browser-Globals.
+
+### D-015 Statische Auslieferung der Entwürfe im Dev-Server
+
+Das Plugin `wandelbar:design-explorations` in `vite.config.ts` (nur `serve`) liefert `/wandelbar/design/explorations/` als reine Dateien mit `Cache-Control: no-store` aus.
+**Grund:** Vite transformierte die Seiten (gelockerte CSP) und lieferte über `<link>` eingebundenes CSS nach Änderungen teils veraltet aus. Jetzt gilt in den Entwürfen die strenge CSP, wie später in der App.
+
+### D-016 Schriften für die Entwürfe
+
+Albert Sans (A), Archivo (B), Fredoka und Nunito (C) liegen als lateinische WOFF2-Teilmengen in `design/explorations/fonts/`, zusammen 0,23 MB, alle OFL-1.1 (vom Nutzer freigegeben). Für die App wird die Schrift der gewählten Richtung später über @fontsource eingebunden.

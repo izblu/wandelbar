@@ -30,6 +30,19 @@ Die vollständigen Lizenztexte aller Pakete, die in die App eingebündelt werden
 
 axe-core steht unter der MPL-2.0. Es wird nur in den Tests verwendet, nicht verändert und nicht mit der App ausgeliefert.
 
+## Nur Design-Entwürfe (`design/explorations/`, nicht in der App enthalten)
+
+Schriften, lokal als WOFF2 abgelegt, nur lateinische Zeichen inklusive Umlauten. Quelle sind die npm-Pakete `@fontsource-variable/*` 5.3.0. Die Lizenztexte liegen jeweils daneben als `*-OFL.txt`.
+
+| Schrift     | Datei                                       | Größe | Lizenz  | Rechteinhaber                   |
+| ----------- | ------------------------------------------- | ----- | ------- | ------------------------------- |
+| Albert Sans | `fonts/albert-sans-latin-wght-normal.woff2` | 32 KB | OFL-1.1 | The Albert Sans Project Authors |
+| Archivo     | `fonts/archivo-latin-wdth-normal.woff2`     | 90 KB | OFL-1.1 | The Archivo Project Authors     |
+| Fredoka     | `fonts/fredoka-latin-wdth-normal.woff2`     | 68 KB | OFL-1.1 | The Fredoka Project Authors     |
+| Nunito      | `fonts/nunito-latin-wght-normal.woff2`      | 39 KB | OFL-1.1 | The Nunito Project Authors      |
+
+Die Icons und die Puppenhaus-Darstellung der Entwürfe sind eigene Arbeit (MIT wie das Projekt).
+
 ## Inhalte
 
 | Inhalt                                              | Herkunft                    | Lizenz                |
