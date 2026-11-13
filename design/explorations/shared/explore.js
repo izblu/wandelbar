@@ -1,5 +1,5 @@
 /**
- * Gemeinsame Bedienlogik der Design-Entwürfe (MD, Runde 1).
+ * Gemeinsame Bedienlogik der Design-Entwürfe (MD).
  *
  * - Hell/Dunkel: folgt dem System, umschaltbar, per `?theme=dark|light` vorgebbar
  * - Puppenhaus zeichnen, Möbel per Klick auswählen, Eigenschaftenkarte am Möbel ausrichten
@@ -9,7 +9,7 @@
  *
  * Kein Inline-Code und keine `style`-Attribute, damit die strenge CSP der App auch hier gilt.
  */
-import { formatArea, items, renderHouse, roomArea, rooms } from './dollhouse.js';
+import { formatArea, items, renderHouse, roomArea, rooms, sunPosition } from './dollhouse.js';
 
 const doc = document.documentElement;
 const params = new URLSearchParams(location.search);
@@ -244,6 +244,49 @@ document.querySelector('[data-action="zoom-out"]')?.addEventListener('click', ()
 });
 for (const btn of document.querySelectorAll('[data-action="toggle-theme"]')) {
   btn.addEventListener('click', () => setTheme(doc.dataset.theme === 'dark' ? 'light' : 'dark'));
+}
+
+// ------------------------------------------------------------------ Tageszeit (Runde 2)
+
+// Ein Regler mit `data-sun-time` stellt den Sonnenstand ein. Ohne Regler gilt `--sun-time`
+// aus dem CSS. `data-phase` auf <html> sagt dem CSS, ob Sonne oder Lampen leuchten.
+const sunInput = document.querySelector('input[data-sun-time]');
+const sunOutputs = [...document.querySelectorAll('[data-sun-output]')];
+let sunTouched = false;
+
+const clock = (t) => {
+  const h = Math.floor(t);
+  const m = Math.round((t - h) * 60);
+  return `${h}:${String(m).padStart(2, '0')}`;
+};
+
+function setSunTime(t) {
+  if (!(sunInput instanceof HTMLInputElement)) return;
+  state.sunTime = t;
+  sunInput.value = String(t);
+  sunInput.setAttribute('aria-valuetext', `${clock(t)} Uhr`);
+  const min = Number(sunInput.min) || 0;
+  const max = Number(sunInput.max) || 24;
+  sunInput.style.setProperty('--pos', `${(((t - min) / (max - min)) * 100).toFixed(2)}%`);
+  for (const out of sunOutputs) out.textContent = clock(t);
+  doc.dataset.phase = sunPosition(t).elevation > 4 ? 'day' : 'night';
+}
+
+if (sunInput instanceof HTMLInputElement) {
+  const defaultTime = () =>
+    Number(sunInput.dataset[doc.dataset.theme === 'dark' ? 'night' : 'day']);
+  setSunTime(defaultTime());
+  sunInput.addEventListener('input', () => {
+    sunTouched = true;
+    setSunTime(Number(sunInput.value));
+    scheduleRender();
+  });
+  // Ohne eigene Einstellung folgt die Tageszeit dem Design: hell am Vormittag, dunkel am Abend
+  new MutationObserver(() => {
+    if (sunTouched) return;
+    setSunTime(defaultTime());
+    scheduleRender();
+  }).observe(doc, { attributes: true, attributeFilter: ['data-theme'] });
 }
 
 // ------------------------------------------------------------------ Befehlssuche (Strg+K)

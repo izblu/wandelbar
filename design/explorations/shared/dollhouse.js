@@ -1,5 +1,5 @@
 /**
- * Puppenhaus-Ansicht der Beispielwohnung „Lindenstraße 12“ für die Design-Entwürfe (MD, Runde 1).
+ * Puppenhaus-Ansicht der Beispielwohnung „Lindenstraße 12“ für die Design-Entwürfe (MD).
  *
  * Reines SVG ohne Bibliotheken. Koordinaten in Metern: x nach Osten, y nach Süden, z nach oben.
  * Die Darstellung (Farben, Linien, Schrift, Schatten) kommt vollständig aus dem CSS der jeweiligen
@@ -642,6 +642,277 @@ const glows = [
 const basePlate = { x0: -0.45, y0: -0.45, x1: 11.25, y1: 8.05, z0: -0.22, z1: 0, mat: 'base' };
 
 // ---------------------------------------------------------------------------------------------
+// Licht (Runde 2): Sonne durch die Fenster je nach Tageszeit, abends Lampen. Wird nur gezeichnet,
+// wenn das CSS der Richtung `--light-model: windows` setzt; Runde 1 bleibt unverändert.
+// ---------------------------------------------------------------------------------------------
+
+const FRAME = 0.06; // Rahmen und Sprossen im Lichtbild
+const TRANSOM = 0.62; // Kämpfer (Querstrebe) anteilig über der Brüstung
+
+/** Lampen: Lichtquelle in Höhe `z`, Lichtinsel mit Radius `r`, Schirm mit Radius `shade`. */
+const lamps = [
+  { x: 7.23, y: 4.55, z: 1.35, r: 1.8, shade: 0.17 }, // Stehleuchte im Wohnzimmer
+  { x: 8.1, y: 2.15, z: 1.75, r: 1.5, shade: 0.2, pendant: true }, // Pendelleuchte über dem Esstisch
+  { x: 0.34, y: 0.5, z: 0.72, r: 0.95 }, // Nachttischlampen
+  { x: 0.34, y: 2.9, z: 0.72, r: 0.95 },
+  { x: 0.5, y: 4.8, z: 1.05, r: 1.05 }, // Schreibtischlampe
+];
+
+/**
+ * Sonnenstand an einem Sommertag in Mitteldeutschland, bewusst vereinfacht.
+ * @param {number} time Uhrzeit in Stunden (MESZ), z. B. 8.5 für 8:30 Uhr
+ * @returns {{ azimuth: number, elevation: number }} Grad; Azimut von Norden im Uhrzeigersinn
+ */
+export function sunPosition(time) {
+  const rise = 5.5;
+  const set = 21;
+  const elevation = 60 * Math.sin((Math.PI * (time - rise)) / (set - rise));
+  const azimuth = 180 + (time - (rise + set) / 2) * 15;
+  return { azimuth, elevation };
+}
+
+/** Außennormale einer Außenwand (x nach Osten, y nach Süden). */
+function wallNormal(w) {
+  if (w.axis === 'x') return (w.y0 + w.y1) / 2 < 3.8 ? [0, -1] : [0, 1];
+  return (w.x0 + w.x1) / 2 < 5.4 ? [-1, 0] : [1, 0];
+}
+
+const roomAt = (x, y) => rooms.find((r) => x >= r.x0 && x <= r.x1 && y >= r.y0 && y <= r.y1);
+
+/** Polygon an einem achsparallelen Rechteck abschneiden (Sutherland-Hodgman). */
+function clipToRect(poly, rect) {
+  const planes = [
+    [0, rect.x0, 1],
+    [0, rect.x1, -1],
+    [1, rect.y0, 1],
+    [1, rect.y1, -1],
+  ];
+  let out = poly;
+  for (const [k, v, sign] of planes) {
+    const input = out;
+    out = [];
+    for (let i = 0; i < input.length; i++) {
+      const p = input[i];
+      const q = input[(i + 1) % input.length];
+      const pIn = sign * (p[k] - v) >= 0;
+      const qIn = sign * (q[k] - v) >= 0;
+      if (pIn) out.push(p);
+      if (pIn !== qIn) {
+        const t = (v - p[k]) / (q[k] - p[k]);
+        out.push([p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])]);
+      }
+    }
+  }
+  return out;
+}
+
+/** Konvexe Hülle von Bildschirmpunkten (monotone Kette). */
+function hull(points) {
+  const p = [...points].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  if (p.length < 3) return p;
+  const cross = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const half = (list) => {
+    const h = [];
+    for (const q of list) {
+      while (h.length >= 2 && cross(h[h.length - 2], h[h.length - 1], q) <= 0) h.pop();
+      h.push(q);
+    }
+    h.pop();
+    return h;
+  };
+  return [...half(p), ...half(p.reverse())];
+}
+
+/** Kleiner deterministischer Zufall, damit die Staubkörnchen bei jedem Zeichnen gleich liegen. */
+function seeded(seed) {
+  let a = seed;
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Fenster, durch die gerade Sonne fällt, mit ihrem Lichtbild auf dem Boden (Scheibe für Scheibe). */
+function sunWindows(time) {
+  const { azimuth, elevation } = sunPosition(time);
+  if (elevation < 3) return [];
+  const az = (azimuth * Math.PI) / 180;
+  const toSun = [Math.sin(az), -Math.cos(az)];
+  const reach = 1 / Math.tan((elevation * Math.PI) / 180);
+  const d = [-toSun[0] * reach, -toSun[1] * reach]; // Versatz auf dem Boden je Meter Höhe
+  const out = [];
+  for (const w of walls) {
+    const n = wallNormal(w);
+    if (n[0] * toSun[0] + n[1] * toSun[1] < 0.08) continue;
+    const face = w.axis === 'x' ? (n[1] < 0 ? w.y1 : w.y0) : n[0] < 0 ? w.x1 : w.x0;
+    const at = (u) => (w.axis === 'x' ? [u, face] : [face, u]);
+    for (const op of w.openings) {
+      if (op.type !== 'window') continue;
+      const [mx, my] = at((op.a + op.b) / 2);
+      const room = roomAt(mx - n[0] * 0.3, my - n[1] * 0.3);
+      if (!room) continue;
+      const floorAt = (u, z) => {
+        const [x, y] = at(u);
+        return [x + d[0] * z, y + d[1] * z];
+      };
+      const cols = op.b - op.a >= 0.95 ? 2 : 1;
+      const colW = (op.b - op.a - FRAME * (cols + 1)) / cols;
+      const zt = SILL + (HEAD - SILL) * TRANSOM;
+      const panes = [];
+      for (let c = 0; c < cols; c++) {
+        const u0 = op.a + FRAME + c * (colW + FRAME);
+        const u1 = u0 + colW;
+        for (const [z0, z1] of [
+          [SILL + FRAME, zt - FRAME / 2],
+          [zt + FRAME / 2, HEAD - FRAME],
+        ]) {
+          const quad = [floorAt(u0, z0), floorAt(u1, z0), floorAt(u1, z1), floorAt(u0, z1)];
+          const pane = clipToRect(quad, room);
+          if (pane.length >= 3) panes.push(pane);
+        }
+      }
+      const outline = clipToRect(
+        [floorAt(op.a, SILL), floorAt(op.b, SILL), floorAt(op.b, HEAD), floorAt(op.a, HEAD)],
+        room,
+      );
+      out.push({ op, at, d, room, panes, outline });
+    }
+  }
+  return out;
+}
+
+/** Markup für Licht am Boden (unter den Möbeln) und im Raum (über den Möbeln). */
+function lightMarkup(P, { time, plan, W, H }) {
+  const { s, sp } = P.basis;
+  const defs = [
+    '<filter id="pane-blur" x="-10%" y="-10%" width="120%" height="120%">' +
+      `<feGaussianBlur stdDeviation="${r1(Math.max(0.6, s * 0.012))}"/></filter>`,
+    '<filter id="beam-blur" x="-20%" y="-20%" width="140%" height="140%">' +
+      `<feGaussianBlur stdDeviation="${r1(Math.max(2, s * 0.09))}"/></filter>`,
+    '<radialGradient id="pool-grad"><stop offset="0" class="pool-stop-0"/>' +
+      '<stop offset="0.55" class="pool-stop-1"/><stop offset="1" class="pool-stop-2"/></radialGradient>',
+  ];
+  const floor = [];
+  const air = [];
+  const windows = sunWindows(time);
+
+  floor.push('<g class="sun-bloom">');
+  for (const win of windows)
+    if (win.outline.length >= 3)
+      floor.push(`<polygon points="${pts(win.outline.map(([x, y]) => P(x, y)))}"/>`);
+  floor.push('</g><g class="sunlight">');
+  for (const win of windows)
+    for (const pane of win.panes)
+      floor.push(`<polygon points="${pts(pane.map(([x, y]) => P(x, y)))}"/>`);
+  floor.push('</g><g class="lamp-pools">');
+  for (const l of lamps) {
+    const [cx, cy] = P(l.x, l.y);
+    floor.push(
+      `<ellipse cx="${r1(cx)}" cy="${r1(cy)}" rx="${r1(l.r * s)}" ry="${r1(l.r * s * sp)}" fill="url(#pool-grad)"/>`,
+    );
+  }
+  floor.push('</g>');
+  if (plan) return { defs: defs.join(''), floor: floor.join(''), air: '' };
+
+  // Tag: zarter Schatten über der Szene, im Sonnenlicht ausgespart. Licht braucht Schatten.
+  const lit = windows
+    .filter((win) => win.outline.length >= 3)
+    .map((win) => `<polygon points="${pts(win.outline.map(([x, y]) => P(x, y)))}"/>`);
+  defs.push(
+    `<filter id="mask-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="${r1(Math.max(3, s * 0.1))}"/></filter>` +
+      `<mask id="sun-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}">` +
+      `<rect width="${W}" height="${H}" fill="#fff"/><g fill="#000" filter="url(#mask-blur)">${lit.join('')}</g></mask>`,
+  );
+  air.push(`<rect class="day-veil" width="${W}" height="${H}" mask="url(#sun-mask)"/>`);
+
+  // Abend: Schleier über der Szene, an den Lampen ausgespart
+  defs.push(
+    '<radialGradient id="veil-hole"><stop offset="0" stop-color="#000"/>' +
+      '<stop offset="0.45" stop-color="#000" stop-opacity="0.92"/>' +
+      '<stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>',
+  );
+  const holes = lamps.map((l) => {
+    const [cx, cy] = P(l.x, l.y, l.z * 0.45);
+    const rx = l.r * s * 1.3;
+    return `<ellipse cx="${r1(cx)}" cy="${r1(cy)}" rx="${r1(rx)}" ry="${r1(rx * 0.78)}" fill="url(#veil-hole)"/>`;
+  });
+  defs.push(
+    `<mask id="veil-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}">` +
+      `<rect width="${W}" height="${H}" fill="#fff"/>${holes.join('')}</mask>`,
+  );
+  air.push(`<rect class="night-veil" width="${W}" height="${H}" mask="url(#veil-mask)"/>`);
+
+  // Lichtkegel unter Stehleuchte und Pendelleuchte
+  air.push('<g class="lamp-cones">');
+  lamps.forEach((l, i) => {
+    if (!l.shade) return;
+    const [tx, ty] = P(l.x, l.y, l.z);
+    const [bx, by] = P(l.x, l.y, 0);
+    const rt = l.shade * s;
+    const rb = l.r * 0.6 * s;
+    const rby = rb * sp;
+    defs.push(
+      `<linearGradient id="cone-${i}" gradientUnits="userSpaceOnUse" x1="${r1(tx)}" y1="${r1(ty)}" x2="${r1(bx)}" y2="${r1(by + rby)}">` +
+        '<stop offset="0" class="cone-stop-0"/><stop offset="1" class="cone-stop-1"/></linearGradient>',
+    );
+    air.push(
+      `<path class="cone" d="M${r1(tx - rt)},${r1(ty)} L${r1(bx - rb)},${r1(by)} A${r1(rb)} ${r1(rby)} 0 0 0 ${r1(bx + rb)},${r1(by)} L${r1(tx + rt)},${r1(ty)} Z" fill="url(#cone-${i})"/>`,
+    );
+    if (l.pendant) {
+      const [, cy] = P(l.x, l.y, 2.6);
+      air.push(
+        `<line class="lamp-cord" x1="${r1(tx)}" y1="${r1(cy)}" x2="${r1(tx)}" y2="${r1(ty)}"/>` +
+          `<ellipse class="lamp-bulb" cx="${r1(tx)}" cy="${r1(ty)}" rx="${r1(rt)}" ry="${r1(rt * 0.55)}"/>`,
+      );
+    }
+  });
+  air.push('</g>');
+
+  // Sonnenstrahlen vom Fenster zum Lichtbild, dazu Staub im Licht
+  air.push('<g class="beams">');
+  windows.forEach((win, i) => {
+    const { op, at, outline } = win;
+    if (outline.length < 3) return;
+    const corners = [];
+    for (const u of [op.a, op.b]) for (const z of [SILL, HEAD]) corners.push(P(...at(u), z));
+    for (const [x, y] of outline) corners.push(P(x, y));
+    const [wx, wy] = at((op.a + op.b) / 2);
+    const [x1, y1] = P(wx, wy, (SILL + HEAD) / 2);
+    const fx = outline.reduce((sum, p) => sum + p[0], 0) / outline.length;
+    const fy = outline.reduce((sum, p) => sum + p[1], 0) / outline.length;
+    const [x2, y2] = P(fx, fy);
+    defs.push(
+      `<linearGradient id="beam-${i}" gradientUnits="userSpaceOnUse" x1="${r1(x1)}" y1="${r1(y1)}" x2="${r1(x2)}" y2="${r1(y2)}">` +
+        '<stop offset="0" class="beam-stop-0"/><stop offset="1" class="beam-stop-1"/></linearGradient>',
+    );
+    air.push(`<polygon points="${pts(hull(corners))}" fill="url(#beam-${i})"/>`);
+  });
+  air.push('</g><g class="motes">');
+  const rand = seeded(12);
+  for (const win of windows) {
+    const { op, at, d, room } = win;
+    let placed = 0;
+    for (let tries = 0; placed < 8 && tries < 60; tries++) {
+      const u = op.a + rand() * (op.b - op.a);
+      const zw = SILL + rand() * (HEAD - SILL);
+      const h = 0.15 + rand() * (zw - 0.3);
+      const [x0, y0] = at(u);
+      const x = x0 + d[0] * (zw - h);
+      const y = y0 + d[1] * (zw - h);
+      const size = 0.7 + rand() * 1.3;
+      if (x < room.x0 || x > room.x1 || y < room.y0 || y > room.y1) continue;
+      const [mx, my] = P(x, y, h);
+      air.push(`<circle cx="${r1(mx)}" cy="${r1(my)}" r="${size.toFixed(1)}"/>`);
+      placed++;
+    }
+  }
+  air.push('</g>');
+  return { defs: defs.join(''), floor: floor.join(''), air: air.join('') };
+}
+
+// ---------------------------------------------------------------------------------------------
 // Projektion und Zeichnen
 // ---------------------------------------------------------------------------------------------
 
@@ -853,12 +1124,17 @@ export function renderHouse(svg, state) {
   const oy = pad.t + (availH - (bb.y1 - bb.y0) * s) * alignY - bb.y0 * s;
   const P = projector(theta, phi, s, ox, oy);
   const sides = !plan;
+  const light =
+    cs.getPropertyValue('--light-model').trim() === 'windows'
+      ? lightMarkup(P, { time: state.sunTime ?? num('--sun-time', 8.5), plan, W, H })
+      : null;
 
   const out = [];
   out.push(`<defs>
     <filter id="soft-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="${r1(Math.max(2, s * 0.08))}"/></filter>
     <filter id="wide-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="${r1(Math.max(6, s * 0.35))}"/></filter>
     <radialGradient id="glow-grad"><stop offset="0" class="glow-stop-0"/><stop offset="1" class="glow-stop-1"/></radialGradient>
+    ${light?.defs ?? ''}
   </defs>`);
 
   // Modellplatte und Schatten
@@ -919,17 +1195,23 @@ export function renderHouse(svg, state) {
       ),
     );
   }
-  out.push('</g><g class="sun">');
-  for (const patch of sunPatches)
-    out.push(`<polygon points="${pts(patch.map(([x, y]) => P(x, y)))}"/>`);
-  out.push('</g><g class="glows">');
-  for (const g of glows) {
-    const [cx, cy] = P(g.x, g.y);
-    out.push(
-      `<ellipse cx="${r1(cx)}" cy="${r1(cy)}" rx="${r1(g.r * s)}" ry="${r1(g.r * s * Math.sin(phi))}" fill="url(#glow-grad)"/>`,
-    );
+  out.push('</g>');
+  if (light) {
+    out.push(light.floor);
+  } else {
+    out.push('<g class="sun">');
+    for (const patch of sunPatches)
+      out.push(`<polygon points="${pts(patch.map(([x, y]) => P(x, y)))}"/>`);
+    out.push('</g><g class="glows">');
+    for (const g of glows) {
+      const [cx, cy] = P(g.x, g.y);
+      out.push(
+        `<ellipse cx="${r1(cx)}" cy="${r1(cy)}" rx="${r1(g.r * s)}" ry="${r1(g.r * s * Math.sin(phi))}" fill="url(#glow-grad)"/>`,
+      );
+    }
+    out.push('</g>');
   }
-  out.push('</g><g class="doors">');
+  out.push('<g class="doors">');
   for (const d of doorSwings()) {
     const at = (a) => [
       d.hinge[0] + d.r * (Math.cos(a) * d.c[0] + Math.sin(a) * d.o[0]),
@@ -994,6 +1276,7 @@ export function renderHouse(svg, state) {
     );
   }
   out.push('</g>');
+  if (light) out.push(light.air);
 
   // Raumbeschriftungen
   out.push('<g class="labels">');

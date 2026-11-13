@@ -81,3 +81,8 @@ Das Plugin `wandelbar:design-explorations` in `vite.config.ts` (nur `serve`) lie
 ### D-016 Schriften für die Entwürfe
 
 Albert Sans (A), Archivo (B), Fredoka und Nunito (C) liegen als lateinische WOFF2-Teilmengen in `design/explorations/fonts/`, zusammen 0,23 MB, alle OFL-1.1 (vom Nutzer freigegeben). Für die App wird die Schrift der gewählten Richtung später über @fontsource eingebunden.
+
+### D-017 Lichtberechnung in den Entwürfen
+
+`shared/dollhouse.js` berechnet das Licht aus einem vereinfachten Sonnenstand (Sommertag in Mitteldeutschland, Uhrzeit als Eingabe). Die Sonne fällt durch die Fenster der Außenwände: Jede Scheibe wird auf den Boden projiziert und am Raum abgeschnitten (Sutherland-Hodgman). Dazu kommen Lichtschein, ein zarter Tagesschatten mit ausgesparten Sonnenflächen, Lichtstrahlen und Staub. Abends gibt es Lampeninseln, Lichtkegel und einen Abendschleier. Das CSS einer Variante schaltet die Berechnung mit `--light-model: windows` ein, die Uhrzeit kommt aus `--sun-time` oder einem Regler mit `data-sun-time`. Ohne diese Angabe zeichnet das Skript die festen Sonnenflecken aus Runde 1.
+**Grund:** Die Licht-Signatur sollte deutlicher und glaubwürdig werden, ohne Runde 1 zu verändern. In der App übernimmt das später three.js mit einem gerichteten Licht nach Sonnenstand. Dafür braucht der Grundriss eine Nordrichtung.
