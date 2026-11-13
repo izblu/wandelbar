@@ -1,6 +1,6 @@
 # Status – Wandelbar
 
-**Stand:** 2026-11-13 – M0 abgeschlossen, als Nächstes MD.
+**Stand:** 2026-11-13 – MD Runde 1 abgeschlossen, Richtung A „Morgenlicht“ gewählt. Als Nächstes Runde 2.
 
 ## Erledigt
 
@@ -19,13 +19,28 @@
   - Der erste Workflow-Lauf war grün (Prüfen 1:32 min, Veröffentlichen 20 s). GitHub Pages liefert den Branch `gh-pages` aus.
   - **Live:** <https://izblu.github.io/wandelbar/>. Service Worker aktiv, CSP wortgleich, keine Konsolenfehler. `/preview/` ist noch leer und wird mit dem ersten `milestone/*`-Push befüllt.
 
-## Als Nächstes: MD Designphase
+## MD Designphase (Branch `milestone/md-design`)
 
-1. **Runde 1:** drei Richtungen (_ruhig, hell und wohnlich_ / _mutig und editorial_ / _verspielt und farbig_), jeweils am Bildschirm „Einrichten“ für PC und Handy, als HTML in `design/explorations/`, gezeigt in der Browser-Vorschau.
-2. Runde 2: Verfeinerung des Gewinners.
-3. Design-System (Tokens, Icons, Bausteine), klickbarer Prototyp im echten Stack, Feedback.
+### Runde 1 – erledigt (2026-11-13)
 
-Branch dafür: `milestone/md-design`. Der Skill `frontend-design` wird genutzt.
+- Drei Richtungen am Bildschirm „Einrichten“, je für PC und Handy, hell und dunkel, in `design/explorations/`. Die Übersicht liegt in `index.html`, anzusehen über `npm run dev` unter `/wandelbar/design/explorations/`.
+  - **A „Morgenlicht“** (ruhig, hell und wohnlich): Kalkweiß, Schiefer, Fjordblau, helle Eiche, Morgensonne. Albert Sans, Milchglas, große Radien, weiche Bewegung. Signatur: Licht (Sonnenflecken am Tag, Lampenkegel im dunklen Modus).
+  - **B „Supergrafik“** (mutig und editorial): Kobalt, Papier, Tinte, Rosa. Archivo extra schmal, Raumnamen als Bodenschrift, schwarze Wandschnitte, Bildunterschrift mit Führungslinie.
+  - **C „Spielhaus“** (verspielt und farbig): Flieder, Pflaume, bunte Akzente. Fredoka und Nunito, Bauklotz-Möbel, Aufkleber, federnde Bewegung.
+- Alle Entwürfe teilen dieselbe Beispielwohnung „Lindenstraße 12“ (3 Zimmer, 82 m², SVG-Puppenhaus) und dieselbe Bedienung: Schrittleiste, schwebende Werkzeugpalette, Karte am ausgewählten Möbel, Strg+K, ausziehbare Handy-Karte.
+- axe (WCAG 2.2 AA): 0 Verstöße in allen Varianten (3 Richtungen × PC/Handy × hell/dunkel). Keine fremden Anfragen, strenge CSP auch in den Entwürfen.
+- Auf Wunsch zusätzlich gezeigt: die Mischung „A mit Anleihen“ (`a-mix.html`, `styles/a-mix.css`): dunkle Wandschnitte und kräftige Maßzahlen aus B, federnde Rückmeldung aus C.
+- **Wahl des Nutzers: A „Morgenlicht“ pur**, ohne die Anleihen aus B und C.
+
+### Als Nächstes: Runde 2
+
+2–3 Verfeinerungen von A „Morgenlicht“ (Farben, Schrift, Details), wieder als HTML in `design/explorations/` mit Vergleich in der Browser-Vorschau. Ansatzpunkte aus der Bewertung von Runde 1:
+
+- Die Licht-Signatur ist noch zu zart. Sonnenflecken und Lampenkegel deutlicher und eigenständiger gestalten.
+- A wirkt auf den ersten Blick am wenigsten eigenständig. Varianten in Farbton (wärmer/kühler), Akzentfarbe und Schriftschnitt prüfen.
+- Milchglas (`backdrop-filter`) kostet auf Android-Mittelklasse Leistung, wenn darunter echtes 3D läuft. Eine Variante mit deckenden Flächen zeigen.
+
+Danach: Design-System (Tokens, Icons, Bausteine), klickbarer Prototyp im echten Stack, Feedback. Der Skill `frontend-design` wird genutzt.
 
 ## Offene Punkte
 
@@ -33,5 +48,4 @@ Branch dafür: `milestone/md-design`. Der Skill `frontend-design` wird genutzt.
 - **Rückfrage möglich:** CSP um `base-uri 'self'`, `form-action 'self'` und `object-src 'none'` härten (siehe D-005).
 - TypeScript 7 einsetzen, sobald typescript-eslint ihn unterstützt (D-001).
 - Neue Shells kennen Node.js nach der Installation; in schon offenen Terminals oder der Claude-App fehlt es bis zum Neustart im PATH.
-- Den leeren alten Ordner `C:\Users\Guenay\Coding Projects\Room Planer 3D` löschen (**nach Bestätigung**).
 - Commit, Push und Merge immer nur nach ausdrücklicher Bestätigung.
