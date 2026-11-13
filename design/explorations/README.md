@@ -1,4 +1,6 @@
-# Design-Entwürfe (MD, Runde 1)
+# Design-Entwürfe (MD)
+
+## Runde 1: drei Richtungen
 
 Drei Richtungen für den Schritt „Einrichten“, jeweils für PC und Handy, hell und dunkel:
 
@@ -8,7 +10,18 @@ Drei Richtungen für den Schritt „Einrichten“, jeweils für PC und Handy, he
 - `index.html`: Übersicht zum Vergleichen
 - `a-mix.html`: zusätzlich gezeigte Mischung „A mit Anleihen“ (nicht gewählt, bleibt zum Nachvollziehen der Entscheidung)
 
-**Gewählt:** A „Morgenlicht“ pur (2026-11-13). Runde 2 verfeinert diese Richtung.
+**Gewählt:** A „Morgenlicht“ pur (2026-11-13), in Runde 2 verfeinert zu A4 „Sonnenstand“.
+
+## Runde 2: Verfeinerungen von A
+
+Jede Variante lädt `styles/a-morgenlicht.css` und danach ein eigenes Stylesheet, das nur die Unterschiede enthält:
+
+- `a2-fruehlicht.html`: kühler und klarer, Petrol, leichter Schriftschnitt, scharfe Fensterbilder
+- `a3-honiglicht.html`: wärmer und wohnlicher, Moos, kräftiger Schnitt, Lichtstrahlen und Lampeninseln
+- `a4-sonnenstand.html`: deckende Flächen ohne Milchglas, Tageszeit-Regler für den Sonnenstand
+- `runde-2.html`: Vergleich mit A pur
+
+Das Licht berechnet `shared/dollhouse.js` aus Sonnenstand und Fenstern, sobald das CSS einer Variante `--light-model: windows` setzt. A, B und C aus Runde 1 bleiben unverändert.
 
 ## Ansehen
 

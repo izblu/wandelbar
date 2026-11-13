@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self'; img-src 'self' blob: data:; worker-src 'self' blob:; script-src 'self' 'wasm-unsafe-eval'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Verfeinerungen von A, Runde 2 – Wandelbar</title>
+    <link rel="stylesheet" href="shared/overview.css" />
+    <script type="module" src="shared/overview.js"></script>
+  </head>
+  <body>
+    <header class="intro">
+      <p class="eyebrow">Wandelbar · Designphase MD · Runde 2</p>
+      <h1>Drei Verfeinerungen von „Morgenlicht“</h1>
+      <p class="lede">
+        Alle Varianten bleiben bei A pur: ruhig, hell und wohnlich, mit Albert Sans. Jede verschiebt
+        eine Achse deutlich: Farbton und Akzent, Schriftschnitt, Milchglas oder deckende Flächen.
+        Gemeinsam ist allen ein stärkeres Licht: Die Sonne fällt jetzt dort durch die Fenster, wo
+        sie zur Uhrzeit wirklich stünde, und am Abend leuchten die Lampen. Oben steht A aus Runde 1
+        zum Vergleich.
+      </p>
+      <div class="controls">
+        <div class="theme-switch" role="group" aria-label="Design der Vorschauen">
+          <button type="button" data-theme-choice="light" aria-pressed="true">Hell</button>
+          <button type="button" data-theme-choice="dark" aria-pressed="false">Dunkel</button>
+        </div>
+        <p class="hint">
+          Die Vorschauen sind bedienbar. In A4 lässt sich die Tageszeit verschieben.
+          <a href="index.html">Zu Runde 1</a>
+        </p>
+      </div>
+    </header>
+
+    <main>
+      <section class="direction" aria-labelledby="dir-a">
+        <div class="about">
+          <p class="letter">A · Referenz aus Runde 1</p>
+          <h2 id="dir-a">Morgenlicht</h2>
+          <p class="tagline">ruhig, hell und wohnlich</p>
+          <ul class="chips" aria-label="Farben">
+            <li class="chip c-a1">Kalkweiß</li>
+            <li class="chip c-a2">Schiefer</li>
+            <li class="chip c-a3">Fjordblau</li>
+            <li class="chip c-a4">Eiche</li>
+            <li class="chip c-a5">Morgensonne</li>
+          </ul>
+          <dl>
+            <dt>Ausgangspunkt</dt>
+            <dd>
+              Milchglas, große Radien, Albert Sans in mittleren Gewichten. Das Licht ist zart:
+              blasse Sonnenflecken am Tag, weiche Lichtkreise am Abend.
+            </dd>
+          </dl>
+          <p class="open"><a href="a-morgenlicht.html">A im ganzen Fenster öffnen</a></p>
+        </div>
+        <div class="frames">
+          <div class="frame frame-desktop" data-width="1440" data-height="900">
+            <iframe src="a-morgenlicht.html" title="A am PC" loading="lazy"></iframe>
+          </div>
+          <div class="frame frame-phone" data-width="390" data-height="844">
+            <iframe src="a-morgenlicht.html" title="A am Handy" loading="lazy"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section class="direction" aria-labelledby="dir-a2">
+        <div class="about">
+          <p class="letter">A2</p>
+          <h2 id="dir-a2">Frühlicht</h2>
+          <p class="tagline">kühler und klarer</p>
+          <ul class="chips" aria-label="Farben">
+            <li class="chip c-f1">Porzellan</li>
+            <li class="chip c-f2">Nachtblau</li>
+            <li class="chip c-f3">Petrol</li>
+            <li class="chip c-f4">Helle Eiche</li>
+            <li class="chip c-f5">Frühsonne</li>
+          </ul>
+          <dl>
+            <dt>Schrift</dt>
+            <dd>
+              Albert Sans im leichten Schnitt: Überschriften 500 statt 650, etwas größer und enger
+              gesetzt. Wirkt präzise und luftig.
+            </dd>
+            <dt>Formen</dt>
+            <dd>Feineres Milchglas mit weniger Unschärfe und heller Glaskante.</dd>
+            <dt>Licht</dt>
+            <dd>
+              Die Sonne zeichnet scharfe Fensterbilder mit Sprossen auf den Boden, der übrige Raum
+              liegt in zartem Schatten. Abends klare Lichtkegel unter Steh- und Pendelleuchte.
+            </dd>
+            <dt>Bewegung</dt>
+            <dd>Ruhig wie A, ohne Dauerbewegung im Bild.</dd>
+          </dl>
+          <p class="open"><a href="a2-fruehlicht.html">A2 im ganzen Fenster öffnen</a></p>
+        </div>
+        <div class="frames">
+          <div class="frame frame-desktop" data-width="1440" data-height="900">
+            <iframe src="a2-fruehlicht.html" title="A2 am PC" loading="lazy"></iframe>
+          </div>
+          <div class="frame frame-phone" data-width="390" data-height="844">
+            <iframe src="a2-fruehlicht.html" title="A2 am Handy" loading="lazy"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section class="direction" aria-labelledby="dir-a3">
+        <div class="about">
+          <p class="letter">A3</p>
+          <h2 id="dir-a3">Honiglicht</h2>
+          <p class="tagline">wärmer und wohnlicher</p>
+          <ul class="chips" aria-label="Farben">
+            <li class="chip c-h1">Kalkputz</li>
+            <li class="chip c-h2">Umbra</li>
+            <li class="chip c-h3">Moos</li>
+            <li class="chip c-h4">Warme Eiche</li>
+            <li class="chip c-h5">Honig</li>
+          </ul>
+          <dl>
+            <dt>Schrift</dt>
+            <dd>
+              Albert Sans im kräftigen Schnitt: Überschriften 750, eng gesetzt, Zahlen fett.
+              Freundlich und fest.
+            </dd>
+            <dt>Formen</dt>
+            <dd>Warm getöntes Milchglas, noch weichere Radien.</dd>
+            <dt>Licht</dt>
+            <dd>
+              Tief stehende Morgensonne mit sichtbaren Strahlen und schwebendem Staub. Abends liegt
+              die Wohnung im Halbdunkel, und die Lampen schneiden warme Inseln heraus.
+            </dd>
+            <dt>Bewegung</dt>
+            <dd>
+              Der Staub schwebt langsam, die Strahlen atmen leicht. Mit „Bewegung reduzieren“ steht
+              alles still.
+            </dd>
+          </dl>
+          <p class="open"><a href="a3-honiglicht.html">A3 im ganzen Fenster öffnen</a></p>
+        </div>
+        <div class="frames">
+          <div class="frame frame-desktop" data-width="1440" data-height="900">
+            <iframe src="a3-honiglicht.html" title="A3 am PC" loading="lazy"></iframe>
+          </div>
+          <div class="frame frame-phone" data-width="390" data-height="844">
+            <iframe src="a3-honiglicht.html" title="A3 am Handy" loading="lazy"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section class="direction" aria-labelledby="dir-a4">
+        <div class="about">
+          <p class="letter">A4</p>
+          <h2 id="dir-a4">Sonnenstand</h2>
+          <p class="tagline">deckend, Licht als Werkzeug</p>
+          <ul class="chips" aria-label="Farben">
+            <li class="chip c-a1">Kalkweiß</li>
+            <li class="chip c-a2">Schiefer</li>
+            <li class="chip c-a3">Fjordblau</li>
+            <li class="chip c-a4">Eiche</li>
+            <li class="chip c-s5">Sonne</li>
+          </ul>
+          <dl>
+            <dt>Schrift</dt>
+            <dd>Wie A, damit der Unterschied bei Flächen und Licht sichtbar wird.</dd>
+            <dt>Formen</dt>
+            <dd>
+              Deckende Flächen mit feiner Kante statt Milchglas. Über echtem 3D muss dann nichts
+              weichgezeichnet werden, das schont schwächere Handys.
+            </dd>
+            <dt>Licht</dt>
+            <dd>
+              Ein Tageszeit-Regler lässt die Sonne durch die Fenster wandern. Ab Sonnenuntergang
+              gehen die Lampen an. Hell beginnt um 7:30 Uhr, dunkel um 21:30 Uhr.
+            </dd>
+            <dt>Bewegung</dt>
+            <dd>Das Licht folgt dem Regler, sonst bleibt das Bild ruhig.</dd>
+          </dl>
+          <p class="open"><a href="a4-sonnenstand.html">A4 im ganzen Fenster öffnen</a></p>
+        </div>
+        <div class="frames">
+          <div class="frame frame-desktop" data-width="1440" data-height="900">
+            <iframe src="a4-sonnenstand.html" title="A4 am PC" loading="lazy"></iframe>
+          </div>
+          <div class="frame frame-phone" data-width="390" data-height="844">
+            <iframe src="a4-sonnenstand.html" title="A4 am Handy" loading="lazy"></iframe>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p>
+        Schrift: Albert Sans unter der SIL Open Font License 1.1, lokal unter
+        <code>fonts/</code>. Keine neuen Schriften oder Dateien.
+      </p>
+    </footer>
+  </body>
+</html>

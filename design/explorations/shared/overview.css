@@ -102,6 +102,10 @@ h1 {
   color: var(--ink-2);
   font-size: 14px;
 }
+.hint a {
+  color: var(--ink);
+  font-weight: 600;
+}
 
 .direction {
   display: grid;
@@ -170,6 +174,40 @@ h1 {
 }
 .c-a5 {
   --sw: #f6d98b;
+}
+/* Runde 2: A2 Frühlicht (f), A3 Honiglicht (h), A4 Sonnenstand (s) */
+.c-f1 {
+  --sw: #ebf0f2;
+}
+.c-f2 {
+  --sw: #142129;
+}
+.c-f3 {
+  --sw: #0b5d68;
+}
+.c-f4 {
+  --sw: #e0cdae;
+}
+.c-f5 {
+  --sw: #ffdf85;
+}
+.c-h1 {
+  --sw: #eee8e0;
+}
+.c-h2 {
+  --sw: #2a241f;
+}
+.c-h3 {
+  --sw: #3d5e44;
+}
+.c-h4 {
+  --sw: #d8b489;
+}
+.c-h5 {
+  --sw: #f3b443;
+}
+.c-s5 {
+  --sw: #f5cf68;
 }
 .c-b1 {
   --sw: #2440c8;

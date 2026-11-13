@@ -1,0 +1,265 @@
+/*
+ * A3 „Honiglicht“: Verfeinerung von A „Morgenlicht“, wärmer und wohnlicher.
+ * Wird nach a-morgenlicht.css geladen und ändert nur, was die Variante ausmacht.
+ *
+ * Farbe: Kalkputz statt Kalkweiß, Umbra als Schrift, Moosgrün als Akzent, Honig als Licht.
+ * Schrift: Albert Sans im kräftigen Schnitt (Überschriften 700, enger gesetzt), freundlich und fest.
+ * Formen: warmes Milchglas, noch weichere Radien.
+ * Licht: tief stehende Sonne mit Lichtstrahlen und schwebendem Staub; abends liegt die Wohnung
+ * im Halbdunkel, und die Lampen schneiden warme Inseln heraus.
+ */
+
+:root {
+  --light-model: windows;
+  --sun-time: 7;
+
+  --bg: #eee8e0;
+  --bg-glow: rgb(255 204 128 / 0.62);
+  --surface: rgb(255 251 246 / 0.78);
+  --surface-solid: #fdfaf6;
+  --surface-sunk: #f3ede5;
+  --surface-hover: #ebe2d7;
+  --line: rgb(42 36 31 / 0.1);
+  --line-strong: rgb(42 36 31 / 0.2);
+  --ink: #2a241f;
+  --ink-2: #5d534a;
+  --accent: #3d5e44;
+  --accent-ink: #ffffff;
+  --accent-soft: #dfe8db;
+  --sun: #f3b443;
+  --sun-soft: #fbe6b8;
+  --danger: #9e3a27;
+  --focus: #3d5e44;
+  --backdrop: rgb(42 36 31 / 0.3);
+  --shadow-float: 0 1px 2px rgb(74 48 22 / 0.07), 0 10px 28px -10px rgb(74 48 22 / 0.24);
+  --shadow-card:
+    0 1px 2px rgb(74 48 22 / 0.07), 0 14px 32px -10px rgb(74 48 22 / 0.22),
+    0 44px 80px -30px rgb(74 48 22 / 0.3);
+  --radius-card: 26px;
+  --radius-ctl: 16px;
+
+  --shade: #4a2e14;
+  --mat-base: #e2d1b9;
+  --mat-wall: #fcf9f4;
+  --mat-wall-cap: #dccfbf;
+  --mat-glass: #c3d9dc;
+  --floor-wood: #d8b489;
+  --floor-tile: #ebe5dc;
+  --floor-line: rgb(120 74 30 / 0.15);
+  --rug-1: #f5eee3;
+  --rug-2: #e3dac9;
+  --rug-3: #dbd0bd;
+  --rug-4: #e3d8c6;
+  --mat-fabric2: #b9b79f;
+  --mat-wood: #c99d6d;
+  --mat-wood2: #b5875a;
+  --mat-white: #f8f5ef;
+  --mat-pot: #c48661;
+  --mat-plant: #6e8a5c;
+  --sw-1: #d4c1a3;
+}
+
+:root[data-theme='dark'] {
+  --bg: #16120f;
+  --bg-glow: rgb(255 168 76 / 0.1);
+  --surface: rgb(37 31 26 / 0.84);
+  --surface-solid: #241e19;
+  --surface-sunk: #2e2620;
+  --surface-hover: #393027;
+  --line: rgb(244 237 229 / 0.1);
+  --line-strong: rgb(244 237 229 / 0.2);
+  --ink: #f4ede5;
+  --ink-2: #bcae9f;
+  --accent: #a8c89b;
+  --accent-ink: #17260f;
+  --accent-soft: #2e3c2a;
+  --sun: #ffb54a;
+  --sun-soft: #4c391e;
+  --danger: #f2a390;
+  --focus: #a8c89b;
+  --backdrop: rgb(8 5 3 / 0.6);
+  --shadow-float: 0 1px 2px rgb(0 0 0 / 0.3), 0 10px 28px -10px rgb(0 0 0 / 0.6);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 24px 60px -18px rgb(0 0 0 / 0.7);
+
+  --shade: #080503;
+  --mat-base: #3a3029;
+  --mat-wall: #7a7068;
+  --mat-wall-cap: #514840;
+  --mat-glass: #5c7477;
+  --floor-wood: #725a43;
+  --floor-tile: #524b44;
+  --rug-1: #8e8272;
+  --rug-2: #675d50;
+  --rug-3: #5f564a;
+  --rug-4: #6a6052;
+  --mat-fabric2: #7d7b68;
+  --mat-wood: #8f6d4b;
+  --mat-wood2: #7e5f40;
+  --mat-white: #a29b92;
+  --mat-shade: #ffd28c;
+  --sw-1: #a8977c;
+}
+
+/* ---------------------------------------------------------------- Schrift: kräftiger Schnitt */
+
+html {
+  font-weight: 450;
+}
+.brand-name {
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+.project-name {
+  font-weight: 700;
+}
+.step {
+  font-weight: 600;
+}
+.step[aria-current='step'] {
+  font-weight: 750;
+}
+.insp-kicker {
+  font-weight: 650;
+}
+.insp-head h2 {
+  font-size: 22px;
+  font-weight: 750;
+  letter-spacing: -0.032em;
+}
+.insp-dims {
+  font-weight: 550;
+}
+.row-label,
+.insp-actions button,
+.seg button,
+.chip,
+.tool-tip {
+  font-weight: 650;
+}
+.field-box input {
+  font-weight: 700;
+}
+.price [data-field='price'] {
+  font-size: 20px;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+}
+.facts dd {
+  font-weight: 650;
+}
+.house .label-name {
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+.house .label-area {
+  font-weight: 550;
+}
+.house .dim-label text {
+  font-weight: 750;
+}
+
+/* ---------------------------------------------------------------- Licht */
+
+/* Tag: warmes Lichtbild, deutliche Strahlen, Staub im Licht */
+:root:not([data-theme='dark']) .house .sunlight {
+  display: inline;
+  fill: #ffd98f;
+  opacity: 0.9;
+  filter: url(#soft-blur);
+}
+:root:not([data-theme='dark']) .house .sun-bloom {
+  display: inline;
+  fill: #ffbe5c;
+  opacity: 0.5;
+  filter: url(#wide-blur);
+}
+:root:not([data-theme='dark']) .house .day-veil {
+  display: inline;
+  fill: #5a3412;
+  opacity: 0.11;
+}
+:root:not([data-theme='dark']) .house .beams {
+  display: inline;
+  filter: url(#beam-blur);
+  animation: beam-breathe 9s ease-in-out infinite alternate;
+}
+@keyframes beam-breathe {
+  to {
+    opacity: 0.7;
+  }
+}
+.house .beam-stop-0 {
+  stop-color: #ffd889;
+  stop-opacity: 0.5;
+}
+.house .beam-stop-1 {
+  stop-color: #ffd27a;
+  stop-opacity: 0.04;
+}
+:root:not([data-theme='dark']) .house .motes {
+  display: inline;
+  fill: #fff6dc;
+}
+.house .motes circle {
+  animation: mote-float 11s ease-in-out infinite alternate;
+}
+.house .motes circle:nth-child(3n) {
+  animation-duration: 14s;
+  animation-delay: -4s;
+}
+.house .motes circle:nth-child(3n + 1) {
+  animation-duration: 17s;
+  animation-delay: -9s;
+}
+@keyframes mote-float {
+  from {
+    opacity: 0.2;
+    transform: translate(0, 0);
+  }
+  to {
+    opacity: 0.95;
+    transform: translate(-5px, -7px);
+  }
+}
+
+/* Abend: Halbdunkel mit warmen Lampeninseln */
+:root[data-theme='dark'] .house .night-veil {
+  display: inline;
+  fill: #0b0704;
+  opacity: 0.5;
+}
+:root[data-theme='dark'] .house .lamp-pools,
+:root[data-theme='dark'] .house .lamp-cones {
+  display: inline;
+  mix-blend-mode: screen;
+}
+.house .pool-stop-0 {
+  stop-color: #ffbf5e;
+  stop-opacity: 0.7;
+}
+.house .pool-stop-1 {
+  stop-color: #ffa63d;
+  stop-opacity: 0.3;
+}
+.house .pool-stop-2 {
+  stop-color: #ffa63d;
+  stop-opacity: 0;
+}
+.house .cone-stop-0 {
+  stop-color: #ffd28c;
+  stop-opacity: 0.22;
+}
+.house .cone-stop-1 {
+  stop-color: #ffb54a;
+  stop-opacity: 0.02;
+}
+.house .cone {
+  filter: url(#soft-blur);
+}
+.house .lamp-bulb {
+  fill: #ffe0a6;
+}
+.house .lamp-cord {
+  stroke: var(--ink-2);
+  stroke-width: 1;
+}
