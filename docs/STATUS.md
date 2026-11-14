@@ -1,6 +1,6 @@
 # Status – Wandelbar
 
-**Stand:** 2026-11-14 – Design-System A4 „Sonnenstand“ gebaut, vom Nutzer freigegeben, per Code-Review geprüft, `npm run check` grün, in vier Commits auf `milestone/md-design` (noch nicht gepusht). Nächster Schritt: klickbarer Prototyp der Kernabläufe.
+**Stand:** 2026-11-14 – Design-System A4 „Sonnenstand“ gebaut, vom Nutzer freigegeben, per Code-Review geprüft, `npm run check` grün, in vier Commits auf `milestone/md-design`, gepusht, Vorschau live. Nächster Schritt: klickbarer Prototyp der Kernabläufe.
 
 ## Erledigt
 
@@ -71,7 +71,7 @@
   - Befehlssuche: Die Pfeiltasten folgen der angezeigten Reihenfolge, ein Befehl läuft erst nach der Fokus-Rückgabe.
   - Handy-Karte: Greift man sie während des Nachfederns, folgt sie sofort dem Finger; ein Halten vor dem Loslassen zählt nicht als Wischen.
   - Übersichtsseite: Duplizieren ohne `crypto.randomUUID`, das über http im WLAN fehlt; Kommazahlen bei Breite und Tiefe springen nicht mehr zurück.
-- **Commits** (vom Nutzer bestätigt, 2026-11-14): 1. Abhängigkeiten, Tokens und Grundlage, 2. Bausteine, 3. Übersichtsseite und Tests, 4. Doku. **Noch nicht gepusht**; Push nach `milestone/md-design` (dann auch unter `/preview/`) nur nach eigener Bestätigung.
+- **Commits** (vom Nutzer bestätigt, 2026-11-14): 1. Abhängigkeiten, Tokens und Grundlage, 2. Bausteine, 3. Übersichtsseite und Tests, 4. Doku. Am 2026-11-14 nach Bestätigung gepusht; der Workflow war grün (Prüfen 2:09 min, 25 E2E bestanden). Die Übersicht ist live unter <https://izblu.github.io/wandelbar/preview/bausteine.html>: CSP wortgleich, keine fremden Anfragen, keine Konsolenfehler. Offline am Handy erst, nachdem `/wandelbar/preview/` einmal geöffnet wurde, denn erst die App meldet den Service Worker an.
 
 ### Als Nächstes: klickbarer Prototyp der Kernabläufe
 
