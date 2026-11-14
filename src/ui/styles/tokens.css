@@ -1,0 +1,245 @@
+/*
+ * Design-Tokens von Wandelbar, abgeleitet aus Entwurf A4 „Sonnenstand“ (MD Runde 2).
+ *
+ * Hell und dunkel stehen in einer Zeile: `light-dark(hell, dunkel)`. Welcher Wert gilt, entscheidet
+ * `color-scheme` am Element. Ohne Einstellung folgt die Seite dem System; `data-theme` auf <html>
+ * legt hell oder dunkel fest. Ein Bereich kann mit `color-scheme: dark` auch einzeln dunkel sein.
+ *
+ * Nur diese Datei enthält feste Farbwerte. Alle Bausteine lesen die Tokens (geprüft per Unit-Test).
+ */
+
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+
+    /* ------------------------------------------------------------ Palette (benannte Grundfarben) */
+
+    --palette-limewash: #edf0ee; /* Kalkweiß */
+    --palette-slate: #1e2a2f; /* Schiefer */
+    --palette-fjord: #2c5b70; /* Fjordblau */
+    --palette-fjord-light: #8fc3d6; /* Fjordblau im Dunkeln */
+    --palette-oak: #dcc4a2; /* helle Eiche */
+    --palette-sun: #f5cf68; /* Sonne */
+    --palette-night: #141a1d; /* Nacht */
+
+    /* ------------------------------------------------------------ Farben nach Aufgabe */
+
+    /* Grund und Flächen: alle Bedienflächen sind deckend, ohne Milchglas */
+    --color-canvas: light-dark(var(--palette-limewash), var(--palette-night));
+    --color-canvas-glow: light-dark(rgb(255 236 186 / 0.75), rgb(243 199 122 / 0.11));
+    --color-surface: light-dark(#fbfcfb, #1f282c); /* schwebende Leisten */
+    --color-surface-raised: light-dark(#ffffff, #253034); /* Karten, Dialoge */
+    --color-surface-sunk: light-dark(#eff2f0, #2c383d); /* Felder, gewählte Segmente */
+    --color-surface-hover: light-dark(#e5eae7, #344247);
+
+    /* Kanten und Linien */
+    --color-edge: light-dark(rgb(30 42 47 / 0.12), rgb(232 238 236 / 0.1));
+    --color-line: light-dark(rgb(30 42 47 / 0.1), rgb(232 238 236 / 0.1));
+    --color-line-strong: light-dark(rgb(30 42 47 / 0.2), rgb(232 238 236 / 0.2));
+
+    /* Schrift */
+    --color-ink: light-dark(var(--palette-slate), var(--palette-limewash));
+    --color-ink-muted: light-dark(#4e5c62, #a9b5b9);
+
+    /* Akzent: Fjordblau für Auswahl, aktive Werkzeuge und Fokus */
+    --color-accent: light-dark(var(--palette-fjord), var(--palette-fjord-light));
+    --color-on-accent: light-dark(#ffffff, #0f2a35);
+    --color-accent-soft: light-dark(#dde9ed, #23404b);
+    --color-focus: var(--color-accent);
+
+    /* Licht: die Sonne als Signatur */
+    --color-sun: light-dark(var(--palette-sun), #f3c77a);
+    --color-sun-soft: light-dark(#fcefc9, #4a3f2a);
+    /* 57 % Schiefer: kleinster Anteil, der auf --color-sun-soft AA erreicht (4,6 : 1) */
+    --color-sun-ink: light-dark(
+      color-mix(in oklab, var(--palette-sun), var(--palette-slate) 57%),
+      #f3c77a
+    );
+    --color-sun-edge: light-dark(
+      color-mix(in oklab, var(--palette-sun), var(--palette-slate) 58%),
+      color-mix(in oklab, #f3c77a, var(--palette-limewash) 58%)
+    );
+    --color-moon: #dfe5f2;
+    --color-moon-edge: #3f4a6b;
+
+    /* Signal */
+    --color-danger: light-dark(#a23b2a, #f0a493);
+
+    /* Überlagerungen */
+    --color-backdrop: light-dark(rgb(30 42 47 / 0.42), rgb(5 8 10 / 0.72));
+    --color-tooltip: var(--color-ink);
+    --color-on-tooltip: var(--color-canvas);
+
+    /* Tagesverlauf im Tageszeit-Regler: Dämmerung, Vormittag, Mittag, Abendrot, Nacht */
+    --gradient-daylight: linear-gradient(
+      90deg,
+      #e9b77c 0%,
+      #f6dc8f 14%,
+      #fbefc8 42%,
+      #f7d98a 72%,
+      #e59a62 88%,
+      #3f4a6b 100%
+    );
+
+    /* Szene (vorläufig, bis das 3D die Materialien liefert) */
+    --scene-floor: light-dark(var(--palette-oak), #6c5843);
+    --scene-floor-line: light-dark(rgb(120 84 40 / 0.13), rgb(0 0 0 / 0.18));
+    --scene-wall: light-dark(#fbfbf9, #6f7675);
+    --scene-wall-cap: light-dark(#d3dbd8, #4c5456);
+    --scene-glass: light-dark(#bcd8e2, #5f7d88);
+    --scene-sunlight: light-dark(#fff6d8, #e6c27a);
+    --scene-shade: light-dark(#1e3a46, #05090b);
+    --scene-lamp: #ffd98f;
+    --scene-night: #0d1418;
+    --scene-wood: light-dark(#b8936a, #7d6248);
+    --scene-furniture: light-dark(#e4e1db, #8d918f);
+    --scene-furniture-edge: light-dark(rgb(30 42 47 / 0.22), rgb(0 0 0 / 0.4));
+    --scene-rug: light-dark(#e6dccb, #776a58);
+    --scene-plant: light-dark(#8fa37f, #5b6b51);
+    --scene-measure: light-dark(var(--palette-fjord), var(--palette-fjord-light));
+
+    /* ------------------------------------------------------------ Schrift */
+
+    --font-sans: 'Albert Sans Variable', 'Albert Sans', system-ui, sans-serif;
+    --font-features: 'ss01';
+
+    /* Größen in rem, damit die Schriftgröße des Systems gilt (16 px = 1 rem) */
+    --text-2xs: 0.71875rem; /* 11,5 px: Tastenkürzel, Schrittnummern */
+    --text-xs: 0.78125rem; /* 12,5 px: Beschriftungen über Feldern, Zeilen in Karten */
+    --text-s: 0.84375rem; /* 13,5 px: Bedienelemente, Hinweise */
+    --text-m: 0.9375rem; /* 15 px: Fließtext, Eingaben, Befehle */
+    --text-l: 1.0625rem; /* 17 px: Markenname */
+    --text-xl: 1.1875rem; /* 19 px: Preise, Titel auf dem Handy */
+    --text-2xl: 1.3125rem; /* 21 px: Titel der Eigenschaftenkarte */
+    --text-3xl: 1.75rem; /* 28 px: Seitentitel */
+    --text-4xl: 2.75rem; /* 44 px: große Überschriften */
+
+    --weight-regular: 400;
+    --weight-medium: 550;
+    --weight-semibold: 600;
+    --weight-bold: 650;
+
+    --leading-tight: 1.2;
+    --leading-normal: 1.45;
+
+    --tracking-display: -0.03em;
+    --tracking-tight: -0.018em;
+    --tracking-snug: -0.01em;
+    --tracking-wide: 0.02em;
+
+    /* ------------------------------------------------------------ Abstände (4-px-Raster) */
+
+    --space-0-5: 2px;
+    --space-1: 4px;
+    --space-1-5: 6px;
+    --space-2: 8px;
+    --space-2-5: 10px;
+    --space-3: 12px;
+    --space-3-5: 14px;
+    --space-4: 16px;
+    --space-4-5: 18px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-7: 28px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+    --space-20: 80px;
+
+    /* Höhe von Bedienelementen */
+    --control-s: 32px;
+    --control-m: 36px;
+    --control-l: 40px;
+    --control-xl: 44px;
+    --control-tool: 46px;
+
+    /* ------------------------------------------------------------ Radien */
+
+    --radius-xs: 3px;
+    --radius-s: 7px;
+    --radius-m: 12px;
+    --radius-l: 14px;
+    --radius-xl: 22px;
+    --radius-2xl: 24px;
+    --radius-sheet: 28px;
+    --radius-pill: 999px;
+
+    /* ------------------------------------------------------------ Kanten und Schatten */
+
+    /* Deckende Flächen bekommen eine feine Kante und einen Schatten, kein backdrop-filter. */
+    --shadow-color-contact: light-dark(rgb(30 58 70 / 0.08), rgb(0 0 0 / 0.35));
+    --shadow-color-float: light-dark(rgb(30 58 70 / 0.22), rgb(0 0 0 / 0.6));
+    --shadow-color-card: light-dark(rgb(30 58 70 / 0.28), rgb(0 0 0 / 0.7));
+
+    --edge: 0 0 0 1px var(--color-edge);
+    --edge-inset: inset 0 0 0 1px var(--color-edge);
+    /* Farbfelder: feine Kante und leichte Wölbung, damit helle Stoffe auf hellen Karten sichtbar bleiben */
+    --swatch-shade: inset 0 0 0 1px rgb(0 0 0 / 0.1), inset 0 -6px 10px rgb(0 0 0 / 0.08);
+    --shadow-float:
+      0 1px 2px var(--shadow-color-contact), 0 8px 21px -10px var(--shadow-color-float);
+    --shadow-card:
+      0 1px 2px var(--shadow-color-contact), 0 20px 46px -17px var(--shadow-color-card);
+    --shadow-sheet: 0 -18px 40px -16px var(--shadow-color-card);
+
+    /* Fertige Ebenen: Kante plus Schatten */
+    --elevation-float: var(--edge), var(--shadow-float);
+    --elevation-card: var(--edge), var(--shadow-card);
+    --elevation-sheet: 0 -1px 0 var(--color-edge), var(--shadow-sheet);
+
+    /* ------------------------------------------------------------ Bewegung */
+
+    --ease-standard: cubic-bezier(0.22, 0.8, 0.24, 1); /* weich auslaufend */
+    --ease-sheet: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    --duration-quick: 200ms; /* Hinweise ein- und ausblenden */
+    --duration-base: 250ms; /* Farbwechsel beim Überfahren */
+    --duration-moderate: 300ms; /* Auswahl, Verschieben */
+    --duration-slow: 420ms; /* Handy-Karte */
+    --duration-enter: 500ms; /* Karte erscheint am Objekt */
+
+    /* ------------------------------------------------------------ Icons */
+
+    --icon-s: 16px;
+    --icon-m: 18px;
+    --icon-l: 22px;
+    --icon-stroke: 1.6;
+    --icon-stroke-bold: 2.2;
+
+    /* ------------------------------------------------------------ Ebenen */
+
+    --z-card: 20;
+    --z-bar: 25;
+    --z-top: 30;
+    --z-sheet: 40;
+    --z-skip: 100;
+
+    /* ------------------------------------------------------------ Maße der Bausteine */
+
+    --card-width: 304px;
+    --card-gap: 40px;
+    --card-margin: 24px;
+    --card-safe-top: 92px;
+    --card-safe-bottom: 92px;
+    --sheet-peek: 178px;
+  }
+
+  :root[data-theme='light'] {
+    color-scheme: light;
+  }
+
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+  }
+
+  /* Rücksicht auf reduzierte Bewegung: Übergänge springen sofort an ihr Ziel. */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --duration-quick: 0ms;
+      --duration-base: 0ms;
+      --duration-moderate: 0ms;
+      --duration-slow: 0ms;
+      --duration-enter: 0ms;
+    }
+  }
+}

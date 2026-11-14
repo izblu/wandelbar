@@ -1,0 +1,10 @@
+/*
+ * Einstieg des Design-Systems. Die Reihenfolge der Ebenen legt fest, was gewinnt:
+ * Bausteine überschreiben die Grundlage, Seiten (z. B. die Übersicht) die Bausteine.
+ */
+
+@layer reset, fonts, tokens, base, components, page;
+
+@import '@fontsource-variable/albert-sans/wght.css' layer(fonts);
+@import './tokens.css';
+@import './base.css';
