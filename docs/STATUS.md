@@ -1,6 +1,6 @@
 # Status – Wandelbar
 
-**Stand:** 2026-11-13 – MD Runde 2 abgeschlossen, Verfeinerung A4 „Sonnenstand“ gewählt. Als Nächstes das Design-System.
+**Stand:** 2026-11-14 – Design-System A4 „Sonnenstand“ gebaut, vom Nutzer freigegeben, per Code-Review geprüft, `npm run check` grün, in vier Commits auf `milestone/md-design` (noch nicht gepusht). Nächster Schritt: klickbarer Prototyp der Kernabläufe.
 
 ## Erledigt
 
@@ -52,18 +52,35 @@
   - Dazu kommt ein Sonnenstand im 3D: gerichtetes Licht nach Uhrzeit und Datum, abends Lampen.
   - Die Leistung auf Android-Mittelklasse ist dabei zu prüfen, z. B. Schattenwurf nur auf Wunsch.
 
-### Als Nächstes: Design-System
+### Design-System – vom Nutzer freigegeben (2026-11-13)
 
-Auf Grundlage von A4 „Sonnenstand“ (`design/explorations/a4-sonnenstand.html`, Stylesheets `a-morgenlicht.css` und `a4-sonnenstand.css`):
+- **Technik** (vom Nutzer bestätigt, Gründe in D-018 bis D-024): Lucide, Albert Sans über @fontsource, native Bausteine mit eigenen Hooks statt Radix oder React Aria (beide verletzen die CSP), eigenes CSS mit Tokens, Bewegung per CSS und Web Animations API.
+- **Bausteine in `src/ui/`**, Sammel-Export `src/ui/index.ts`:
+  - Bühne mit Plätzen (PC- und Handy-Anordnung per Container Query, Zwischenstufe bis 1100 px), Icons, Marke, Knöpfe, Tasten, Design-Umschalter, Speicherstand („nur auf diesem Gerät“, Symbol `SaveCheck` statt Wolke)
+  - Schrittleiste, Werkzeugpalette (ein Tab-Halt, Pfeiltasten), Ansichtsleiste mit Tageszeit-Regler
+  - Eigenschaftenkarte: am PC mit Spitze zum Objekt (`placeCard`), auf dem Handy als Blatt von unten mit Griff, Ziehen und selbst gerechneter Feder (`sheetPhysics`); eingeklappt ist der Körper `inert`
+  - Befehlssuche (Strg+K, natives `<dialog>`, Combobox; findet Umlaute und ß auch ohne Sonderzeichen)
+  - Felder für Text, Zahlen mit Einheit und Maße mit verständlichen Meldungen, Häkchen, Schalter, Farbfelder
+- **Übersichtsseite `bausteine.html`** (zweiter Vite-Eintrag, im Build und im Vorab-Cache, D-023): „Am Werk“ mit PC- und Handy-Bühne nebeneinander und gemeinsamem Zustand, Wohnzimmer als Draufsicht mit wanderndem Sonnenlicht und Lampen am Abend; dazu Farben mit live gerechnetem Kontrast, Schrift, Maße, Bewegung, Icons und alle Bausteine mit Zuständen. Lokal unter `/wandelbar/bausteine.html`, nach dem nächsten Push auch unter `/wandelbar/preview/bausteine.html`.
+- **Prüfungen:** `npm run check` grün (zuletzt 2026-11-14 nach dem Code-Review): 68 Unit-Tests (darunter der Farbwert-Test: feste Farben nur in `tokens.css`) und 25 E2E-Tests (7 planmäßig übersprungen). axe ohne Verstöße hell und dunkel an PC (1440×900) und Handy (390×844), auch mit offener Suche und aufgeklappter Handy-Karte. Tastatur-Tests für Werkzeugpalette, Befehlssuche, Regler, Farbfelder, Zahlenfeld und Griff der Handy-Karte. Keine Konsolenfehler, keine fremden Anfragen.
+- Dabei korrigiert: Die Sonnenschrift hell ist minimal dunkler (Kontrast 3,86 → 4,61 : 1). Der OFL-Text von Albert Sans liegt jetzt im Build unter `licenses/`.
+- Vergleichsbilder PC/Handy, hell/dunkel liegen außerhalb des Repos im Notizordner der Session.
+- **Freigabe:** Der Nutzer hat die Übersichtsseite freigegeben, nachdem der abgeschnittene Auswahlring der Farbfelder im Handy-Blatt behoben war.
+- **Code-Review** (`/code-review`, 2026-11-14): acht Funde, alle behoben.
+  - Zahlenfelder übernehmen erst mit Enter oder beim Verlassen und runden nicht: Angezeigt und gespeichert wird der getippte Wert. Damit lange Werte in die Maßfelder passen, steht die Einheit einmal in der Überschrift („Maße in cm“). Beides hat der Nutzer entschieden (D-024).
+  - Befehlssuche: Die Pfeiltasten folgen der angezeigten Reihenfolge, ein Befehl läuft erst nach der Fokus-Rückgabe.
+  - Handy-Karte: Greift man sie während des Nachfederns, folgt sie sofort dem Finger; ein Halten vor dem Loslassen zählt nicht als Wischen.
+  - Übersichtsseite: Duplizieren ohne `crypto.randomUUID`, das über http im WLAN fehlt; Kommazahlen bei Breite und Tiefe springen nicht mehr zurück.
+- **Commits** (vom Nutzer bestätigt, 2026-11-14): 1. Abhängigkeiten, Tokens und Grundlage, 2. Bausteine, 3. Übersichtsseite und Tests, 4. Doku. **Noch nicht gepusht**; Push nach `milestone/md-design` (dann auch unter `/preview/`) nur nach eigener Bestätigung.
 
-1. **Tokens** als CSS-Variablen: Farben hell/dunkel, Typografie (Albert Sans, Skala, Gewichte), Abstände, Radien, Schatten und Kanten, Bewegung (`--ease`, Dauer, reduzierte Bewegung).
-2. **Icons:** einheitlicher Satz auf Basis von `shared/icons.svg`, Entscheidung Lucide oder Phosphor laut Plan.
-3. **Bausteine:** Schrittleiste, Werkzeugpalette, Ansichtsleiste mit Tageszeit-Regler, Eigenschaftenkarte und Handy-Karte, Befehlssuche, Felder, Farbfelder, Knöpfe.
+### Als Nächstes: klickbarer Prototyp der Kernabläufe
 
-Danach folgt der klickbare Prototyp der Kernabläufe im echten Stack (Vite, React), dann das Feedback des Nutzers. Der Skill `frontend-design` wird weiter genutzt.
+Im echten Stack (Vite, React) mit den Bausteinen aus `src/ui/`: die Kernabläufe Grundriss → Bauen → Einrichten → Erleben zum Durchklicken, noch ohne echte Erkennung und echtes 3D. Danach Feedback des Nutzers. Der Skill `frontend-design` wird weiter genutzt.
 
 ## Offene Punkte
 
+- **Wunsch des Nutzers für später: mehr Zoomstufen.** Die Übersichtsseite hat 8 (70 bis 140 % in 10-%-Schritten), das ist zu wenig. Wie es genau sein soll, ist noch zu klären, spätestens beim 3D bzw. beim Prototyp.
+- **Kartenplatzierung am PC:** Bei sehr breiten Möbeln (z. B. Sofa 6 m) rutscht die Karte nach links unter die Werkzeugpalette. `placeCard` kennt bisher nur Ränder oben und unten (`safeTop`, `safeBottom`), nicht links. Im Prototyp beheben.
 - **Vorläufig bis MD:** App-Icon, Grundstile und automatisches Service-Worker-Update. Mit Projektdaten ab M1 braucht es eine Update-Meldung (siehe D-006).
 - **Rückfrage möglich:** CSP um `base-uri 'self'`, `form-action 'self'` und `object-src 'none'` härten (siehe D-005).
 - TypeScript 7 einsetzen, sobald typescript-eslint ihn unterstützt (D-001).
