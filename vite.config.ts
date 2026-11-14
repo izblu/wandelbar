@@ -105,6 +105,29 @@ function serveDesignExplorations(): Plugin {
   };
 }
 
+/**
+ * Legt die Lizenztexte selbst gehosteter Schriften in den Build (`licenses/`). Die OFL verlangt den
+ * Text bei jeder Weitergabe der Schrift; `build.license` erfasst über CSS eingebundene Pakete nicht.
+ */
+function bundleFontLicenses(): Plugin {
+  const fonts: Record<string, string> = {
+    'albert-sans-OFL.txt': './node_modules/@fontsource-variable/albert-sans/LICENSE',
+  };
+  return {
+    name: 'wandelbar:font-licenses',
+    apply: 'build',
+    async generateBundle() {
+      for (const [fileName, source] of Object.entries(fonts)) {
+        this.emitFile({
+          type: 'asset',
+          fileName: `licenses/${fileName}`,
+          source: await readFile(fileURLToPath(new URL(source, import.meta.url))),
+        });
+      }
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   const channel = resolveChannel(mode);
   const base = BASE_BY_CHANNEL[channel];
@@ -120,11 +143,19 @@ export default defineConfig(({ mode }) => {
       license: { fileName: 'third-party-licenses.md' },
       // Schriften nie als data:-URL einbetten: Die CSP erlaubt für Schriften nur 'self'.
       assetsInlineLimit: (filePath) => (/\.(woff2?|ttf|otf)$/i.test(filePath) ? false : undefined),
+      // Zweite Seite: die Übersicht des Design-Systems (bausteine.html), siehe D-023.
+      rollupOptions: {
+        input: {
+          main: fileURLToPath(new URL('./index.html', import.meta.url)),
+          bausteine: fileURLToPath(new URL('./bausteine.html', import.meta.url)),
+        },
+      },
     },
     plugins: [
       react(),
       devContentSecurityPolicy(),
       serveDesignExplorations(),
+      bundleFontLicenses(),
       VitePWA({
         registerType: 'autoUpdate',
         // Registrierung über `virtual:pwa-register` in src/app/pwa.ts (kein Inline-Skript wegen CSP).
