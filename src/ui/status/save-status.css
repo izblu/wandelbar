@@ -1,0 +1,15 @@
+/* Speicherstand: leise, ohne eigene Fläche, direkt auf der Bühne */
+
+@layer components {
+  .wb-save-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-ink-muted);
+    font-size: var(--text-s);
+  }
+
+  .wb-save-status[data-state='saving'] .wb-icon {
+    opacity: 0.5;
+  }
+}

@@ -1,0 +1,187 @@
+@layer components {
+  .wb-view-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .wb-segmented,
+  .wb-zoom,
+  .wb-sun-time {
+    display: flex;
+    align-items: center;
+    height: var(--control-xl);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    box-shadow: var(--elevation-float);
+  }
+
+  /* ------------------------------------------------------------ Umschalter */
+
+  .wb-segmented {
+    gap: var(--space-0-5);
+    padding: var(--space-1);
+  }
+
+  .wb-segmented button {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    height: var(--control-m);
+    padding: 0 var(--space-3-5) 0 11px;
+    border-radius: var(--radius-pill);
+    color: var(--color-ink-muted);
+    font-size: var(--text-s);
+    font-weight: var(--weight-medium);
+    transition:
+      background-color var(--duration-moderate) var(--ease-standard),
+      color var(--duration-moderate) var(--ease-standard);
+  }
+
+  .wb-segmented button:hover {
+    background: var(--color-surface-hover);
+    color: var(--color-ink);
+  }
+
+  .wb-segmented button[aria-pressed='true'] {
+    background: var(--color-surface-sunk);
+    box-shadow: var(--edge-inset);
+    color: var(--color-ink);
+  }
+
+  /* ------------------------------------------------------------ Zoom */
+
+  .wb-zoom {
+    padding: var(--space-1);
+  }
+
+  /* ------------------------------------------------------------ Tageszeit */
+
+  .wb-sun-time {
+    gap: var(--space-2-5);
+    padding: 0 var(--space-4) 0 13px;
+    color: var(--color-ink);
+    font-size: var(--text-s);
+    font-weight: var(--weight-medium);
+  }
+
+  .wb-sun-time-icon {
+    color: var(--color-sun-ink);
+  }
+
+  .wb-sun-time-range {
+    width: 150px;
+    height: 28px;
+    margin: 0;
+    background: transparent;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .wb-sun-time-range::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: var(--radius-pill);
+    background: var(--gradient-daylight);
+    box-shadow: var(--edge-inset);
+  }
+
+  .wb-sun-time-range::-moz-range-track {
+    height: 6px;
+    border-radius: var(--radius-pill);
+    background: var(--gradient-daylight);
+  }
+
+  .wb-sun-time-range::-webkit-slider-thumb {
+    width: 22px;
+    height: 22px;
+    margin-top: -8px;
+    border: 2px solid var(--color-sun-edge);
+    border-radius: var(--radius-pill);
+    background: var(--color-sun);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-sun) 30%, transparent);
+    appearance: none;
+    transition: box-shadow var(--duration-moderate) var(--ease-standard);
+  }
+
+  .wb-sun-time-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--color-sun-edge);
+    border-radius: var(--radius-pill);
+    background: var(--color-sun);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-sun) 30%, transparent);
+  }
+
+  .wb-sun-time-range:hover::-webkit-slider-thumb {
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-sun) 34%, transparent);
+  }
+
+  /* Abends wird die Sonne zum Mond */
+  .wb-sun-time[data-phase='night'] .wb-sun-time-range::-webkit-slider-thumb {
+    border-color: var(--color-moon-edge);
+    background: var(--color-moon);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-moon) 25%, transparent);
+  }
+
+  .wb-sun-time[data-phase='night'] .wb-sun-time-range::-moz-range-thumb {
+    border-color: var(--color-moon-edge);
+    background: var(--color-moon);
+  }
+
+  .wb-sun-time-range:focus-visible {
+    border-radius: var(--radius-pill);
+    outline: 2px solid var(--color-focus);
+    outline-offset: 4px;
+  }
+
+  .wb-sun-time-output {
+    min-width: 2.9em;
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--weight-bold);
+    text-align: right;
+  }
+
+  /* ------------------------------------------------------------ Handy */
+
+  @container stage (max-width: 720px) {
+    .wb-view-bar {
+      justify-content: space-between;
+    }
+
+    .wb-segmented {
+      order: 2;
+      height: var(--control-l);
+    }
+
+    .wb-segmented button {
+      height: var(--control-s);
+      padding: 0 9px;
+    }
+
+    .wb-segmented-label,
+    .wb-sun-time-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    /* Zoom mit zwei Fingern; die Knöpfe entfallen ganz */
+    .wb-zoom {
+      display: none;
+    }
+
+    .wb-sun-time {
+      order: 1;
+      height: var(--control-l);
+      gap: var(--space-2);
+      padding: 0 var(--space-3) 0 11px;
+    }
+
+    .wb-sun-time-range {
+      width: 112px;
+    }
+  }
+}
