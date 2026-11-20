@@ -20,6 +20,11 @@ Wandelbar ist eine installierbare Web-App (PWA): Aus einem Grundriss (Bild oder 
 - **Autonomie:** Technikentscheidungen selbst treffen und kurz in `docs/DECISIONS.md` festhalten. **Vorher fragen** bei allem Sichtbaren und der Bedienung, bei Planabweichungen, bei Lizenz- oder Datenschutzfolgen, bei neuen Abhängigkeiten über 1 MB und bei Kosten. Fragen einzeln stellen, jeweils mit Empfehlung.
 - **Sprachen:** Bezeichner im Code englisch. Kommentare, Dokumentation, Commits und PRs deutsch. Mit dem Nutzer Deutsch sprechen.
 - **Kontext:** möglichst ein Meilenstein pro Chat. `docs/STATUS.md` nach jedem Arbeitsblock aktualisieren. Ab etwa 200.000 Token den Stand in STATUS festhalten und an eine neue Session übergeben.
+- **Prüfen in zwei Stufen** (vom Nutzer so gewünscht, weil der volle Lauf vor allem durch die E2E-Tests lange dauert):
+  - **Zwischendurch** während der Arbeit: `npm run check:fast`. Betrifft eine Änderung bestimmte E2E-Tests, nur diese gezielt starten, z. B. `npx playwright test e2e/core-flows.spec.ts`.
+  - **Vor jedem Commit-Vorschlag:** der volle `npm run check` mit allen E2E-Tests (Datenschutz, Offline, axe).
+  - **Sofort voll prüfen** nach Änderungen an CSP, Service Worker, `vite.config.ts` oder Abhängigkeiten. Fremde Anfragen und den Offline-Betrieb prüfen nur die E2E-Tests.
+  - Im Bericht an den Nutzer sagen, welche Stufe gelaufen ist.
 - **Testdaten:** In `fixtures/` liegen nur frei lizenzierte Pläne. Private Grundrisse und Projekte gehören nach `fixtures/private/` (per `.gitignore` ausgeschlossen) und kommen nie ins Repo.
 
 ## Befehle
@@ -38,7 +43,8 @@ Node.js 26 (LTS) liegt unter `C:\Program Files\nodejs`. Kennt eine ältere Shell
 | `npm run typecheck`              | `tsc -b`                                                                     |
 | `npm test`                       | Unit-Tests (Vitest), Dateien `src/**/*.test.ts(x)`                           |
 | `npm run test:e2e`               | Playwright gegen den Produktions-Build, Desktop-Chromium und Pixel-Emulation |
-| `npm run check`                  | Alles oben nacheinander, wie in CI                                           |
+| `npm run check:fast`             | Format, Lint, Typen und Unit-Tests, ohne E2E (für zwischendurch)             |
+| `npm run check`                  | Alles inklusive E2E, wie in CI (vor jedem Commit-Vorschlag)                  |
 | `node scripts/generate-icons.ts` | PWA-Icons aus `public/favicon.svg` neu erzeugen                              |
 
 Playwright braucht einmalig `npx playwright install --only-shell chromium`.
