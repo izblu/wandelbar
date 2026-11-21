@@ -1,7 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { matchesHotkey, parseHotkey } from '../hotkeys.ts';
 
-export type HotkeyMap = Record<string, (event: KeyboardEvent) => void>;
+/**
+ * Gibt ein Handler `false` zurück, war nichts zu tun (z. B. Pfeiltaste ohne gewähltes Möbel):
+ * Dann bleibt die Taste dem Element mit dem Fokus und dem Browser. Jeder andere Rückgabewert,
+ * auch keiner, gilt als erledigt. (`unknown`, damit Handler ohne Rückgabe weiter passen.)
+ */
+export type HotkeyHandler = (event: KeyboardEvent) => unknown;
+export type HotkeyMap = Record<string, HotkeyHandler>;
 
 interface Options {
   /** Auch auslösen, während in einem Eingabefeld getippt wird (z. B. Strg+K). */
@@ -18,10 +24,32 @@ function isTyping(target: EventTarget | null): boolean {
   );
 }
 
+/** Tasten, mit denen sich Regler und Radios selbst bedienen */
+const ELEMENT_KEYS = new Set([
+  'arrowleft',
+  'arrowright',
+  'arrowup',
+  'arrowdown',
+  'home',
+  'end',
+  'pageup',
+  'pagedown',
+]);
+
+/** Regler und Radiogruppen (z. B. Farbfelder) brauchen diese Taste selbst */
+function ownsKey(target: EventTarget | null, key: string): boolean {
+  return (
+    ELEMENT_KEYS.has(key) &&
+    target instanceof HTMLElement &&
+    target.closest('input[type="range"], input[type="radio"]') !== null
+  );
+}
+
 /**
  * Meldet Tastenkürzel am Dokument an. Beim Tippen in einem Feld greifen sie nur mit
- * `allowInFields` (sonst gehört z. B. Strg+Z dem Feld). Kürzel ohne Strg greifen nicht,
- * solange ein modaler Dialog offen ist.
+ * `allowInFields` (sonst gehört z. B. Strg+Z dem Feld). Pfeiltasten gehören Reglern und Radios.
+ * Kürzel ohne Strg greifen nicht, solange ein modaler Dialog oder ein Menü (Popover) offen ist;
+ * so schließt Esc das Menü.
  */
 export function useHotkeys(
   map: HotkeyMap,
@@ -40,9 +68,9 @@ export function useHotkeys(
         const hotkey = parseHotkey(combo);
         if (!matchesHotkey(event, hotkey)) continue;
         if (!allowInFields && isTyping(event.target)) return;
-        if (!hotkey.mod && document.querySelector('dialog[open]:modal')) return;
-        event.preventDefault();
-        handler(event);
+        if (!hotkey.mod && ownsKey(event.target, hotkey.key)) return;
+        if (!hotkey.mod && document.querySelector('dialog[open]:modal, :popover-open')) return;
+        if (handler(event) !== false) event.preventDefault();
         return;
       }
     };
