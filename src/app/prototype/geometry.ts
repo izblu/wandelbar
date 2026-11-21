@@ -197,6 +197,24 @@ export function rescaleApartment(apartment: Apartment, factor: number): Apartmen
   };
 }
 
+/** Messstrecke beim Nachmessen: die Fensterwand im Wohnzimmer (innen), wie erkannt */
+const REFERENCE: { from: Point; to: Point } = { from: [0, 8.2], to: [5.88, 8.2] };
+
+/**
+ * Die Messstrecke im jetzigen Maßstab, Länge in Metern: Nach einem Nachmessen ist sie mitgestreckt,
+ * ein erneutes Nachmessen geht also von der jetzigen Länge aus.
+ */
+export function referenceLine(apartment: Pick<Apartment, 'scale'>): {
+  from: Point;
+  to: Point;
+  length: number;
+} {
+  const at = (point: Point): Point => scale(point, apartment.scale);
+  const from = at(REFERENCE.from);
+  const to = at(REFERENCE.to);
+  return { from, to, length: Math.hypot(to[0] - from[0], to[1] - from[1]) };
+}
+
 /* ------------------------------------------------------------------ Möbel */
 
 /** Größe auf dem Boden nach Drehung */

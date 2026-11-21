@@ -30,6 +30,7 @@ import { Catalog } from '../Catalog.tsx';
 import {
   FABRICS,
   FLOORS,
+  nextFurnitureId,
   PAINTS,
   placeFromCatalog,
   type Apartment,
@@ -68,21 +69,6 @@ const VIEWS: readonly SegmentOption[] = [
 
 /** Pfeiltasten verschieben das gewählte Möbel um 5 cm, mit Umschalt um 50 cm */
 const NUDGE = 0.05;
-
-let copyCount = 0;
-/**
- * Kennung, die es unter `taken` noch nicht gibt (die Beispielwohnung hat z. B. schon
- * `nightstand-1`). `crypto.randomUUID` fehlt über http im WLAN (Handy-Test).
- */
-function nextId(base: string, taken: readonly { id: string }[]): string {
-  const ids = new Set(taken.map((item) => item.id));
-  let id: string;
-  do {
-    copyCount += 1;
-    id = `${base}-${String(copyCount)}`;
-  } while (ids.has(id));
-  return id;
-}
 
 /** Schritt 3: Einrichten. Möbel stellen, Wände streichen, Böden wählen. */
 export function FurnishStep() {
@@ -208,7 +194,7 @@ export function FurnishStep() {
         ? [(sx - plan.frame.ox) / plan.frame.scale, (sy - plan.frame.oy) / plan.frame.scale]
         : dollhouse.projection.unproject(...areaCenter(dollhouse.area));
     const inside = roomAt(apartment.rooms, center) ? center : roomCenter(apartment, 'living');
-    const item = placeFromCatalog(entry, nextId(entry.kind, apartment.furniture), inside);
+    const item = placeFromCatalog(entry, nextFurnitureId(entry.kind, apartment.furniture), inside);
     edit((current) => ({ ...current, furniture: [...current.furniture, item] }));
     setTool('select');
     select({ kind: 'furniture', id: item.id });
@@ -369,7 +355,7 @@ export function FurnishStep() {
           onDuplicate={() => {
             const copy = {
               ...selected,
-              id: nextId(selected.id, apartment.furniture),
+              id: nextFurnitureId(selected.id, apartment.furniture),
               x: selected.x + 0.3,
               y: selected.y + 0.3,
             };

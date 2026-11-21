@@ -178,7 +178,7 @@ test('Verschieben: Werkzeug (Taste H), Leertaste, rechte Maustaste und Pfeiltast
   await expect(look).toHaveAttribute('aria-pressed', 'true');
 });
 
-test('Puppenhaus in Einrichten: Pfeiltasten bewegen das gewählte Möbel, nicht die Ansicht', async ({
+test('Puppenhaus in Einrichten: Pfeiltasten bewegen das gewählte Möbel in Bildrichtung, nicht die Ansicht', async ({
   page,
 }) => {
   await openApp(page);
@@ -189,7 +189,17 @@ test('Puppenhaus in Einrichten: Pfeiltasten bewegen das gewählte Möbel, nicht 
     .click();
   await expect(scene(page)).toHaveAccessibleName('Lindenstraße 12 als Puppenhaus');
 
-  // Das Sofa über die Befehlssuche wählen
+  // Um 180° drehen (12 × 15°): Das Sofa wechselt im Bild auf die andere Seite der Wohnung. Pfeil
+  // rechts muss es trotzdem nach rechts im Bild schieben, nicht in Richtung der Wohnung (D-034).
+  const sofa = page.locator('[data-hit="furniture:sofa"]');
+  const side = async () => center(await unionBox(sofa)).x - center(await unionBox(floors(page))).x;
+  expect(await side()).toBeGreaterThan(10);
+  await scene(page).focus();
+  for (let index = 0; index < 12; index += 1) await page.keyboard.press('ArrowRight');
+  await expect.poll(side).toBeLessThan(-10);
+  const turned = await unionBox(sofa);
+
+  // Das Sofa über die Befehlssuche wählen; die Ansicht bleibt gedreht
   await page.getByRole('button', { name: /Suchen oder Befehl/ }).click();
   const search = page.getByRole('dialog', { name: 'Befehlssuche' });
   await search.getByRole('combobox').fill('Sofa');
@@ -198,17 +208,30 @@ test('Puppenhaus in Einrichten: Pfeiltasten bewegen das gewählte Möbel, nicht 
   const undo = tools(page).getByRole('button', { name: 'Rückgängig' });
   await expect(undo).toBeDisabled();
 
-  const sofa = page.locator('[data-hit="furniture:sofa"]');
   const view = await unionBox(floors(page));
   const placed = await unionBox(sofa);
+  expect(placed).toEqual(turned);
   await scene(page).focus();
+
+  // Rechts: nach rechts im Bild, ohne Versatz nach oben oder unten
   await page.keyboard.press('ArrowRight');
   await expect(undo).toBeEnabled();
-  await expect.poll(async () => (await unionBox(sofa)).x).not.toBeCloseTo(placed.x, 1);
+  await expect.poll(async () => (await unionBox(sofa)).x).toBeGreaterThan(placed.x + 0.5);
+  let moved = await unionBox(sofa);
+  expect(moved.y).toBeCloseTo(placed.y, 1);
   expect(await unionBox(floors(page))).toEqual(view);
 
+  // Runter: nach unten im Bild, ohne Versatz zur Seite
+  await page.keyboard.press('ArrowDown');
+  await expect.poll(async () => (await unionBox(sofa)).y).toBeGreaterThan(moved.y + 0.5);
+  expect((await unionBox(sofa)).x).toBeCloseTo(moved.x, 1);
+
+  // Links und hoch: zurück an den Platz
   await page.keyboard.press('ArrowLeft');
-  await expect.poll(async () => unionBox(sofa)).toEqual(placed);
+  await page.keyboard.press('ArrowUp');
+  await expect.poll(async () => (await unionBox(sofa)).x).toBeCloseTo(placed.x, 1);
+  moved = await unionBox(sofa);
+  expect(moved.y).toBeCloseTo(placed.y, 1);
 
   // Ohne gewähltes Möbel drehen die Pfeiltasten wieder die Ansicht
   await page.keyboard.press('Escape');

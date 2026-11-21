@@ -102,8 +102,15 @@ for (const colorScheme of ['light', 'dark'] as const) {
       await goToStep(page, 'Bauen');
       await collapseCard(page);
       await room(page, 'work').click();
-      await openCard(page, 'Arbeitszimmer');
+      const work = await openCard(page, 'Arbeitszimmer');
       await expectAccessible(page, 'Bauen mit Karte eines Raums');
+
+      // Leerer Raumname: Meldung des Pflichtfelds in Gefahrfarbe
+      const name = work.getByRole('textbox', { name: 'Name' });
+      await name.fill('');
+      await name.press('Enter');
+      await expect(work.getByText('Pflichtfeld: Gib dem Raum einen Namen.')).toBeVisible();
+      await expectAccessible(page, 'Bauen mit Pflichtfeld-Meldung');
 
       // Grundriss: fertig gelesener Plan
       await goToStep(page, 'Grundriss');

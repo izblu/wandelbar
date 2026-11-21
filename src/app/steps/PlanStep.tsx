@@ -14,9 +14,9 @@ import { prefersReducedMotion } from '../../ui/hooks/useMediaQuery.ts';
 import { useStage } from '../../ui/stage/stageContext.ts';
 import { useApp } from '../AppContext.ts';
 import { usePlanCamera } from '../camera.ts';
-import { recognizedApartment, type Apartment, type Point } from '../prototype/apartment.ts';
+import { recognizedApartment, type Apartment } from '../prototype/apartment.ts';
 import { screenDirection } from '../prototype/directions.ts';
-import { rescaleApartment, sunPatches, totalArea } from '../prototype/geometry.ts';
+import { referenceLine, rescaleApartment, sunPatches, totalArea } from '../prototype/geometry.ts';
 import { PaperPlan } from '../prototype/PaperPlan.tsx';
 import { toCentimeters } from '../units.ts';
 import { useSceneGestures } from '../useSceneGestures.ts';
@@ -32,17 +32,6 @@ const RECOGNITION_MS = 3900;
 
 /** Uhrzeit der Sonnenflecken beim Festlegen der Nordrichtung */
 const NORTH_PREVIEW_TIME = 15.5;
-
-/** Messstrecke beim Nachmessen: die Fensterwand im Wohnzimmer (innen), wie erkannt */
-const REFERENCE: { from: Point; to: Point } = { from: [0, 8.2], to: [5.88, 8.2] };
-
-/** Die Messstrecke im jetzigen Maßstab: nach einem Nachmessen ist sie mitgestreckt */
-function referenceLine(apartment: Apartment): { from: Point; to: Point; centimeters: number } {
-  const at = (point: Point): Point => [point[0] * apartment.scale, point[1] * apartment.scale];
-  const from = at(REFERENCE.from);
-  const to = at(REFERENCE.to);
-  return { from, to, centimeters: toCentimeters(Math.hypot(to[0] - from[0], to[1] - from[1])) };
-}
 
 /**
  * Schritt 1: Grundriss. Datei ablegen, Erkennung (gespielt), Maßstab prüfen, Norden festlegen.
@@ -156,8 +145,9 @@ function PlanSheet() {
   if (!apartment) return null;
   const stage = project.planStage;
   const line = referenceLine(apartment);
-  const reference = typed ?? line.centimeters;
-  const factor = measuring ? reference / line.centimeters : 1;
+  const measured = toCentimeters(line.length);
+  const reference = typed ?? measured;
+  const factor = measuring ? reference / measured : 1;
   const area = totalArea(apartment.rooms) * factor * factor;
   const detected =
     stage === 'recognizing'
@@ -238,7 +228,7 @@ function PlanSheet() {
             area={area}
             measuring={measuring}
             reference={reference}
-            measured={line.centimeters}
+            measured={measured}
             onReference={setTyped}
             onMeasure={() => {
               setMeasuring(true);

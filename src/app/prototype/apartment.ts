@@ -704,6 +704,21 @@ function catalog(id: string): CatalogItem {
   return item;
 }
 
+let furnitureCount = 0;
+/**
+ * Kennung für ein neues Möbel, die es unter `taken` noch nicht gibt (die Beispielwohnung hat z. B.
+ * schon `nightstand-1`). `crypto.randomUUID` fehlt über http im WLAN (Handy-Test).
+ */
+export function nextFurnitureId(base: string, taken: readonly { id: string }[]): string {
+  const ids = new Set(taken.map((item) => item.id));
+  let id: string;
+  do {
+    furnitureCount += 1;
+    id = `${base}-${String(furnitureCount)}`;
+  } while (ids.has(id));
+  return id;
+}
+
 /** Möbel aus dem Katalog an einer Stelle (Mitte) mit Drehung */
 export function placeFromCatalog(
   item: CatalogItem,

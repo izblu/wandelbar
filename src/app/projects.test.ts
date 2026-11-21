@@ -79,6 +79,68 @@ describe('Bearbeiten, Rückgängig und Wiederholen', () => {
     expect(activeProject(unchanged).past).toEqual([]);
   });
 
+  describe('ein Schritt pro Feld', () => {
+    /** Tippen in einem Feld: jede Änderung trägt den Schlüssel des Felds */
+    const type = (name: string, merge = 'room-name:kitchen'): ProjectAction => ({
+      type: 'edit',
+      update: (apartment: Apartment) => ({ ...apartment, name }),
+      merge,
+    });
+
+    it('fasst Änderungen mit demselben Feldschlüssel zu einem Rückgängig-Schritt zusammen', () => {
+      const state = run(initialProjects(), type('W'), type('Wo'), type('Wohnküche'));
+      // Die Vorschau zeigt immer den letzten Stand
+      expect(nameOf(state)).toBe('Wohnküche');
+      expect(activeProject(state).past).toHaveLength(1);
+
+      const undone = run(state, { type: 'undo' });
+      expect(nameOf(undone)).toBe('Lindenstraße 12');
+      expect(activeProject(undone).past).toEqual([]);
+      expect(nameOf(run(undone, { type: 'redo' }))).toBe('Wohnküche');
+    });
+
+    it('beginnt mit einem anderen Feld einen neuen Schritt', () => {
+      const state = run(initialProjects(), type('A'), type('AB'), type('C', 'north'));
+      expect(activeProject(state).past).toHaveLength(2);
+      expect(nameOf(run(state, { type: 'undo' }))).toBe('AB');
+    });
+
+    it('beginnt nach einer Änderung ohne Feldschlüssel einen neuen Schritt', () => {
+      const state = run(initialProjects(), type('A'), rename('B'), type('BC'));
+      expect(activeProject(state).past).toHaveLength(3);
+      expect(nameOf(run(state, { type: 'undo' }))).toBe('B');
+    });
+
+    it('beginnt nach Rückgängig einen neuen Schritt, auch am selben Feld', () => {
+      const state = run(
+        initialProjects(),
+        type('A', 'north'),
+        type('B'),
+        { type: 'undo' },
+        type('C'),
+      );
+      expect(nameOf(state)).toBe('C');
+      // Der Stand vor dem Rückgängig bleibt erreichbar: zurück zu A, dann zum Anfang
+      const once = run(state, { type: 'undo' });
+      expect(nameOf(once)).toBe('A');
+      expect(nameOf(run(once, { type: 'undo' }))).toBe('Lindenstraße 12');
+    });
+
+    it('beginnt nach Wiederholen einen neuen Schritt, auch am selben Feld', () => {
+      const state = run(
+        initialProjects(),
+        type('A', 'north'),
+        type('B'),
+        { type: 'undo' },
+        { type: 'redo' },
+        type('BC'),
+      );
+      expect(nameOf(state)).toBe('BC');
+      expect(activeProject(state).past).toHaveLength(3);
+      expect(nameOf(run(state, { type: 'undo' }))).toBe('B');
+    });
+  });
+
   it('behält höchstens 60 Schritte im Verlauf', () => {
     const edits = Array.from({ length: 70 }, (_, index) => rename(`Name ${String(index)}`));
     const state = run(initialProjects(), ...edits);

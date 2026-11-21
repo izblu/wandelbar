@@ -186,3 +186,67 @@ test('eigene Wohnung: Grundriss ablegen, Maßstab, Norden, Bauen, Einrichten, Er
 
   expect(errors, isPhone(testInfo) ? 'Handy' : 'PC').toEqual([]);
 });
+
+test('Wechsel zwischen den Wohnungen: zurück in den zuletzt geöffneten Schritt, ohne Hinweis', async ({
+  page,
+}) => {
+  test.setTimeout(60_000);
+  const errors = collectErrors(page);
+  await openApp(page);
+  const hint = page.getByRole('status').filter({ hasText: 'Lade zuerst einen Grundriss' });
+  const project = page.getByRole('button', { name: /Wohnung: / });
+  const sample = page.getByRole('button', { name: /^Lindenstraße 12\s*Beispiel/ });
+  const own = page.getByRole('button', { name: /deine Wohnung$/ });
+  const emptyTable = page.getByRole('heading', { name: 'Leg deinen Grundriss auf den Tisch' });
+
+  /** Wechselt über das Menü und prüft, in welchem Schritt die Wohnung aufgeht */
+  async function switchTo(item: typeof sample, name: string, stepName: string) {
+    await project.click();
+    await item.click();
+    await expect(project).toHaveAccessibleName(new RegExp(`Wohnung: ${name}$`));
+    await expect(step(page, stepName)).toHaveAttribute('aria-current', 'step');
+    await expect(hint).toHaveCount(0);
+  }
+
+  // Die Beispielwohnung in Bauen verlassen, eine eigene ohne Grundriss anlegen
+  await goToStep(page, 'Bauen');
+  await project.click();
+  await page.getByRole('button', { name: 'Neue Wohnung aus Grundriss' }).click();
+  await expect(step(page, 'Grundriss')).toHaveAttribute('aria-current', 'step');
+  await expect(emptyTable).toBeVisible();
+
+  // Hin und her, solange die eigene Wohnung noch keinen Grundriss hat
+  await switchTo(sample, 'Lindenstraße 12', 'Bauen');
+  await switchTo(own, 'Neue Wohnung', 'Grundriss');
+  await expect(emptyTable).toBeVisible();
+
+  // Auch über die Befehlssuche
+  await page.getByRole('button', { name: /Suchen oder Befehl/ }).click();
+  const search = page.getByRole('dialog', { name: 'Befehlssuche' });
+  await search.getByRole('combobox').fill('Beispielwohnung');
+  await search.getByRole('option', { name: /Beispielwohnung öffnen/ }).click();
+  await expect(project).toHaveAccessibleName(/Wohnung: Lindenstraße 12$/);
+  await expect(step(page, 'Bauen')).toHaveAttribute('aria-current', 'step');
+  await expect(hint).toHaveCount(0);
+
+  // Die Beispielwohnung jetzt in Einrichten verlassen, die eigene bekommt ihren Grundriss
+  await goToStep(page, 'Einrichten');
+  await switchTo(own, 'Neue Wohnung', 'Grundriss');
+  await page.getByRole('button', { name: 'Beispielplan nehmen' }).click();
+  const panel = page.getByRole('complementary', { name: 'Grundriss' });
+  await expect(panel.getByRole('heading', { name: 'Stimmt der Maßstab?' })).toBeVisible({
+    timeout: 10_000,
+  });
+  await panel.getByRole('button', { name: 'Stimmt so' }).click();
+  await panel.getByRole('button', { name: 'Weiß ich nicht' }).click();
+  await expect(step(page, 'Bauen')).toHaveAttribute('aria-current', 'step');
+
+  // Jede Wohnung geht dort auf, wo man sie verlassen hat
+  await switchTo(sample, 'Lindenstraße 12', 'Einrichten');
+  await switchTo(own, 'Meine Wohnung', 'Bauen');
+  await goToStep(page, 'Erleben');
+  await switchTo(sample, 'Lindenstraße 12', 'Einrichten');
+  await switchTo(own, 'Meine Wohnung', 'Erleben');
+  await expect(scene(page)).toHaveAccessibleName(/^Meine Wohnung als Puppenhaus/);
+  expect(errors).toEqual([]);
+});

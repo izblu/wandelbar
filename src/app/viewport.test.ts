@@ -18,6 +18,7 @@ import {
   planFrame,
   polygonCentroid,
   sceneArea,
+  screenStepOnFloor,
   visibleCenter,
   ZOOM_MAX,
   ZOOM_MIN,
@@ -193,6 +194,64 @@ describe('Puppenhaus', () => {
       expect(next.zoom).toBe(viewport.zoom);
       expectPoint(project(next, to).project(pivot[0], pivot[1], 0), before);
     }
+  });
+
+  describe('screenStepOnFloor', () => {
+    const viewport: Viewport = { zoom: 1.6, center: [5, 4] };
+    const sofa: Point2 = [5.4, 6.7];
+
+    /** Wohin ein Möbel auf dem Bildschirm wandert, wenn es um `step` auf dem Boden rückt */
+    function onScreen(orbit: Orbit, step: Point2): Point2 {
+      const projection = project(viewport, orbit);
+      const before = projection.project(sofa[0], sofa[1], 0);
+      const after = projection.project(sofa[0] + step[0], sofa[1] + step[1], 0);
+      return [after[0] - before[0], after[1] - before[1]];
+    }
+
+    it('schiebt mit Pfeil rechts nach rechts im Bild, auch im gedrehten Puppenhaus', () => {
+      for (const orbit of [
+        ORBIT,
+        { yaw: 0, tilt: 50 },
+        { yaw: 90, tilt: 30 },
+        { yaw: 152, tilt: 50 },
+        { yaw: 180, tilt: 72 },
+        { yaw: -245, tilt: 18 },
+      ]) {
+        const projection = project(viewport, orbit);
+        const right = onScreen(orbit, screenStepOnFloor(projection, 0.05, 0));
+        expect(right[0], `rechts bei ${String(orbit.yaw)}°`).toBeGreaterThan(0);
+        expect(right[1]).toBeCloseTo(0, 9);
+        const left = onScreen(orbit, screenStepOnFloor(projection, -0.05, 0));
+        expect(left[0]).toBeLessThan(0);
+        expect(left[1]).toBeCloseTo(0, 9);
+        // Hoch und runter: senkrecht im Bild, runter zeigt nach unten
+        const down = onScreen(orbit, screenStepOnFloor(projection, 0, 0.05));
+        expect(down[0]).toBeCloseTo(0, 9);
+        expect(down[1], `runter bei ${String(orbit.yaw)}°`).toBeGreaterThan(0);
+        const up = onScreen(orbit, screenStepOnFloor(projection, 0, -0.05));
+        expect(up[0]).toBeCloseTo(0, 9);
+        expect(up[1]).toBeLessThan(0);
+      }
+    });
+
+    it('schiebt auf dem Boden immer genau die Schrittweite, wie gedreht und gezoomt auch', () => {
+      for (const [orbit, zoom] of [
+        [ORBIT, 1],
+        [{ yaw: 152, tilt: 50 }, 4],
+        [{ yaw: 90, tilt: 72 }, 0.25],
+      ] as const) {
+        const projection = project({ ...viewport, zoom }, orbit);
+        for (const [dx, dy] of [
+          [0.05, 0],
+          [0, -0.5],
+          [0.5, 0],
+        ] as const) {
+          const [wx, wy] = screenStepOnFloor(projection, dx, dy);
+          expect(Math.hypot(wx, wy)).toBeCloseTo(Math.hypot(dx, dy), 9);
+        }
+      }
+      expect(screenStepOnFloor(project(viewport), 0, 0)).toEqual([0, 0]);
+    });
   });
 
   describe('visibleCenter', () => {

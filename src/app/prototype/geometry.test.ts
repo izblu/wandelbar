@@ -1,11 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { sampleApartment, type Apartment, type Opening, type Point } from './apartment.ts';
+import {
+  recognizedApartment,
+  sampleApartment,
+  type Apartment,
+  type Opening,
+  type Point,
+} from './apartment.ts';
 import {
   apartmentBounds,
   eveningAmount,
   exteriorWindows,
   openingQuad,
   polygonArea,
+  referenceLine,
   rescaleApartment,
   roomAt,
   SUN_MIN_ELEVATION,
@@ -75,6 +82,24 @@ describe('Flächen', () => {
     const scaled = rescaleApartment(sample, 1.1);
     expect(totalArea(scaled.rooms)).toBeCloseTo(totalArea(sample.rooms) * 1.21, 9);
     expect(rescaleApartment(sample, 1)).toBe(sample);
+  });
+
+  it('ändert die Fläche nicht, wenn man zweimal mit derselben Länge nachmisst', () => {
+    /** Nachmessen wie im Schritt Grundriss: die Messstrecke auf `centimeters` bringen */
+    const measure = (apartment: Apartment, centimeters: number) =>
+      rescaleApartment(apartment, centimeters / 100 / referenceLine(apartment).length);
+
+    const recognized = recognizedApartment('Meine Wohnung', 'plan.pdf');
+    expect(referenceLine(recognized).length).toBeCloseTo(5.88, 9);
+    const once = measure(recognized, 600);
+    expect(referenceLine(once).length).toBeCloseTo(6, 9);
+    expect(totalArea(once.rooms)).toBeCloseTo(totalArea(recognized.rooms) * (600 / 588) ** 2, 9);
+
+    const twice = measure(once, 600);
+    expect(referenceLine(twice).length).toBeCloseTo(6, 9);
+    expect(totalArea(twice.rooms)).toBeCloseTo(totalArea(once.rooms), 9);
+    // Eine andere Länge geht von der jetzigen aus, nicht von der erkannten
+    expect(referenceLine(measure(once, 660)).length).toBeCloseTo(6.6, 9);
   });
 
   it('behält beim Nachmessen die Möbel an ihrer Stelle im Raum', () => {
