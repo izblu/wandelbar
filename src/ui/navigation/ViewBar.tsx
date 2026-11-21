@@ -53,14 +53,52 @@ export function SegmentedControl({ options, value, onChange, label }: SegmentedC
 interface ZoomControlsProps {
   onZoomIn: () => void;
   onZoomOut: () => void;
+  /** Aktueller Zoom, 1 = eingepasst; zeigt dann die Prozentzahl */
+  zoom?: number;
+  /** Zeigt den Knopf „Einpassen“ */
+  onFit?: () => void;
+  canZoomIn?: boolean;
+  canZoomOut?: boolean;
 }
 
-/** Zoom per Knopf am PC. Auf dem Handy zoomt man mit zwei Fingern, die Knöpfe entfallen. */
-export function ZoomControls({ onZoomIn, onZoomOut }: ZoomControlsProps) {
+/**
+ * Zoom per Knopf am PC, stufenlos dazwischen mit Mausrad oder Touchpad. Auf dem Handy zoomt man
+ * mit zwei Fingern, die Knöpfe entfallen. „Einpassen“ zeigt wieder die ganze Wohnung.
+ */
+export function ZoomControls({
+  onZoomIn,
+  onZoomOut,
+  zoom,
+  onFit,
+  canZoomIn = true,
+  canZoomOut = true,
+}: ZoomControlsProps) {
   return (
-    <div className="wb-zoom">
-      <IconButton icon={icons.zoomOut} label="Verkleinern" size="s" onClick={onZoomOut} />
-      <IconButton icon={icons.zoomIn} label="Vergrößern" size="s" onClick={onZoomIn} />
+    <div className="wb-zoom" role="group" aria-label="Zoom">
+      <IconButton
+        icon={icons.zoomOut}
+        label="Verkleinern"
+        size="s"
+        onClick={onZoomOut}
+        aria-disabled={canZoomOut ? undefined : true}
+      />
+      {zoom !== undefined && <output className="wb-zoom-value">{Math.round(zoom * 100)} %</output>}
+      <IconButton
+        icon={icons.zoomIn}
+        label="Vergrößern"
+        size="s"
+        onClick={onZoomIn}
+        aria-disabled={canZoomIn ? undefined : true}
+      />
+      {onFit && (
+        <IconButton
+          className="wb-zoom-fit"
+          icon={icons.fit}
+          label="Einpassen"
+          size="s"
+          onClick={onFit}
+        />
+      )}
     </div>
   );
 }

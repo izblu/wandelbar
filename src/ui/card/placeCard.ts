@@ -29,6 +29,8 @@ export interface CardPlacementInput {
   /** Freiraum oben (Kopfzeile) und unten (Ansichtsleiste) */
   safeTop: number;
   safeBottom: number;
+  /** Freiraum links (Werkzeugpalette); ohne Angabe gilt nur der Rand */
+  safeLeft?: number;
   prefer?: CardSide;
 }
 
@@ -54,21 +56,24 @@ export function placeCard({
   margin,
   safeTop,
   safeBottom,
+  safeLeft = 0,
   prefer = 'right',
 }: CardPlacementInput): CardPlacement {
   const rightOf = target.x1 + gap;
   const leftOf = target.x0 - gap - card.width;
+  const minLeft = Math.max(margin, safeLeft);
 
   let side: CardSide = prefer;
   let left = side === 'right' ? rightOf : leftOf;
   if (side === 'right' && left + card.width > stage.width - margin) {
     side = 'left';
     left = leftOf;
-  } else if (side === 'left' && left < margin) {
+  } else if (side === 'left' && left < minLeft) {
     side = 'right';
     left = rightOf;
   }
-  left = clamp(left, margin, stage.width - card.width - margin);
+  // Links nie unter die Werkzeugpalette; wird es zu eng, gewinnt dieser Freiraum
+  left = clamp(left, minLeft, stage.width - card.width - margin);
 
   const centerY = (target.y0 + target.y1) / 2;
   const top = clamp(

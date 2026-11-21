@@ -63,6 +63,7 @@ export function AnchoredCard({ target, selectionKey, id, children }: AnchoredCar
         margin: readPixels(element, '--card-margin', 24),
         safeTop: readPixels(element, '--card-safe-top', 92),
         safeBottom: readPixels(element, '--card-safe-bottom', 92),
+        safeLeft: readPixels(element, '--card-safe-left', 0),
       });
       setPlacement({ ...next, anchored: true });
     };

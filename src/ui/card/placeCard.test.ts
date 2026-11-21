@@ -69,4 +69,26 @@ describe('placeCard', () => {
     });
     expect(corner.tailY).toBe(TAIL_INSET);
   });
+
+  it('rutscht bei sehr breiten Objekten nicht unter die Werkzeugpalette', () => {
+    const wide = {
+      ...base,
+      target: { x0: 200, y0: 300, x1: 1300, y1: 400, anchorX: 750, anchorY: 300 },
+    };
+    expect(placeCard(wide).left).toBe(24);
+    const placement = placeCard({ ...wide, safeLeft: 96 });
+    expect(placement.side).toBe('left');
+    expect(placement.left).toBe(96);
+  });
+
+  it('kippt nach rechts, wenn links nur der Freiraum der Palette bliebe', () => {
+    const placement = placeCard({
+      ...base,
+      prefer: 'left',
+      safeLeft: 96,
+      target: { ...base.target, x0: 420, x1: 500, anchorX: 460 },
+    });
+    expect(placement.side).toBe('right');
+    expect(placement.left).toBe(540);
+  });
 });

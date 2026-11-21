@@ -97,6 +97,33 @@
     --scene-rug: light-dark(#e6dccb, #776a58);
     --scene-plant: light-dark(#8fa37f, #5b6b51);
     --scene-measure: light-dark(var(--palette-fjord), var(--palette-fjord-light));
+    --scene-linen: light-dark(#f4f2ed, #a9aaa6);
+    --scene-water: light-dark(#d7e6ea, #6b8790);
+    --scene-counter: light-dark(#cfd3d0, #6d7473);
+    --scene-facade: light-dark(#e9ebe8, #565d5f);
+    /* Lichtebene (screen), keine sichtbare Farbe: Schwarz hellt nichts auf und verdeckt Licht */
+    --scene-light-block: #000;
+    /* Innen am Tag: Schwarz dunkelt ab, das Tageslicht (color-dodge) gibt die Farbe genau zurück */
+    --scene-indoor: #000;
+    --scene-daylight: #fff;
+
+    /* Wandfarben und Böden des Prototyps (Daten; abends und im Dunkeln gedämpft) */
+    --paint-limewash: light-dark(#f2f1ec, #8c8f8b);
+    --paint-sage: light-dark(#c3cdb9, #6f7a68);
+    --paint-dove: light-dark(#bccad3, #66737b);
+    --paint-sand: light-dark(#e2d4bc, #857a67);
+    --paint-rose: light-dark(#d9b3a2, #82685d);
+    --floor-oak: light-dark(var(--palette-oak), #6c5843);
+    --floor-smoked: light-dark(#a7876a, #4f3f31);
+    --floor-white: light-dark(#ece7de, #77736c);
+    --floor-tile: light-dark(#dfe2e0, #6a706f);
+    --floor-terracotta: light-dark(#cf9a7a, #7a5543);
+
+    /* Hochgeladener Plan: bleibt Papier, auch im dunklen Design */
+    --paper: light-dark(#fbfaf6, #e4e2da);
+    --paper-ink: #2b2d2e;
+    --paper-ink-soft: rgb(43 45 46 / 0.55);
+    --paper-shadow: light-dark(rgb(30 58 70 / 0.18), rgb(0 0 0 / 0.55));
 
     /* ------------------------------------------------------------ Schrift */
 
@@ -221,6 +248,8 @@
     --card-margin: 24px;
     --card-safe-top: 92px;
     --card-safe-bottom: 92px;
+    /* Links frei für die Werkzeugpalette: Rand 24 + Palette 58 + Luft 14 */
+    --card-safe-left: 96px;
     --sheet-peek: 178px;
   }
 

@@ -55,6 +55,26 @@
     padding: var(--space-1);
   }
 
+  /* Prozentzahl zwischen Minus und Plus; feste Breite, damit die Knöpfe beim Zoomen nicht wandern.
+     Die Ziffern sind trotz tabular-nums nicht ganz gleich breit, der breiteste Wert von 25 bis
+     800 % („444 %“) braucht knapp 4,8ch. nowrap hält Zahl und Prozentzeichen auch in voller
+     Leiste in einer Zeile. */
+  .wb-zoom-value {
+    min-width: 4.8ch;
+    white-space: nowrap;
+    color: var(--color-ink-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+
+  .wb-zoom-fit {
+    margin-left: var(--space-0-5);
+    box-shadow: -1px 0 0 var(--color-line);
+    border-radius: var(--radius-pill);
+  }
+
   /* ------------------------------------------------------------ Tageszeit */
 
   .wb-sun-time {
