@@ -208,7 +208,7 @@ Die Entwürfe liegen als HTML in `design/explorations/` und werden in der Browse
 - **M7 Varianten und Vergleich:** Varianten anlegen, kopieren und umschalten; geteilte Ansicht mit synchronisierter Kamera; Vorher/Nachher-Schieber.
 
 **Welle B, parallel ab M5b:**
-- **M8 Licht und Rendern** (parallele Session): Lichtmodi *Tageslicht* und *Abend*, Lampen einzeln an und aus, Schattenbudget pro Qualitätsstufe, Pathtracer-Standbilder, Screenshots.
+- **M8 Licht und Rendern** (parallele Session): Lichtmodi *Tageslicht* und *Abend*, Lampen einzeln an und aus, Lichtfarbe je Lichtquelle (warmweiß, neutralweiß, RGB) und eine gemeinsame Lichtfarbe für alle Lampen (ohne Sonnenlicht), Schattenbudget pro Qualitätsstufe, Pathtracer-Standbilder, Screenshots.
 - **M9 Exporte** (parallele Session): 2D-Plan als PNG/PDF, Einkaufsliste als CSV/PDF, GLB.
 
 **Danach:**
