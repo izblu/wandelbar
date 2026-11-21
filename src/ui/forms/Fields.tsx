@@ -1,4 +1,4 @@
-import { useId, useState, type InputHTMLAttributes } from 'react';
+import { useId, useRef, useState, type InputHTMLAttributes } from 'react';
 import { formatNumber, INPUT_DECIMALS } from '../format.ts';
 import { Icon } from '../icons/Icon.tsx';
 import { icons } from '../icons/icons.ts';
@@ -16,24 +16,85 @@ interface TextFieldProps extends Omit<
   onChange: (value: string) => void;
   /** Kurzer Hinweis unter dem Feld */
   hint?: string;
+  /** Macht das Feld zum Pflichtfeld: Meldung, wenn es leer bleibt */
+  requiredMessage?: string;
 }
 
-export function TextField({ label, value, onChange, hint, ...rest }: TextFieldProps) {
+/**
+ * Textfeld; jede Eingabe gilt sofort. Ein Pflichtfeld übernimmt nie einen leeren Wert: Solange es
+ * leer ist, bleibt der Wert von vor der Eingabe stehen. Die Meldung erscheint wie bei Zahlenfeldern
+ * erst mit Enter oder beim Verlassen und verschwindet mit dem ersten Zeichen.
+ */
+export function TextField({
+  label,
+  value,
+  onChange,
+  hint,
+  requiredMessage,
+  onFocus,
+  onBlur,
+  onKeyDown,
+  ...rest
+}: TextFieldProps) {
   const id = useId();
   const hintId = `${id}-hint`;
+  const messageId = `${id}-message`;
+  // Leerer Inhalt eines Pflichtfelds; sonst zeigt das Feld `value`
+  const [draft, setDraft] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const [synced, setSynced] = useState(value);
+  if (value !== synced) {
+    // Von außen geändert (z. B. Rückgängig): Der leere Inhalt gilt nicht mehr
+    setSynced(value);
+    setDraft(null);
+    setMessage(null);
+  }
+  const before = useRef(value);
+
+  const remind = () => {
+    if (requiredMessage && draft !== null) setMessage(requiredMessage);
+  };
+  const describedBy = [hint && hintId, message && messageId].filter(Boolean).join(' ');
+
   return (
     <div className="wb-field">
       <label className="wb-field-label" htmlFor={id}>
         {label}
       </label>
-      <span className="wb-field-box">
+      <span className="wb-field-box" data-invalid={message !== null || undefined}>
         <input
           id={id}
           type="text"
-          value={value}
-          aria-describedby={hint ? hintId : undefined}
+          value={draft ?? value}
+          aria-required={requiredMessage ? true : undefined}
+          aria-invalid={message !== null || undefined}
+          aria-describedby={describedBy || undefined}
+          onFocus={(event) => {
+            before.current = value;
+            onFocus?.(event);
+          }}
           onChange={(event) => {
-            onChange(event.currentTarget.value);
+            const text = event.currentTarget.value;
+            if (requiredMessage && text.trim() === '') {
+              setDraft(text);
+              if (value !== before.current) {
+                setSynced(before.current);
+                onChange(before.current);
+              }
+              return;
+            }
+            setDraft(null);
+            setMessage(null);
+            setSynced(text);
+            onChange(text);
+          }}
+          onBlur={(event) => {
+            remind();
+            onBlur?.(event);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') remind();
+            onKeyDown?.(event);
           }}
           {...rest}
         />
@@ -43,6 +104,7 @@ export function TextField({ label, value, onChange, hint, ...rest }: TextFieldPr
           {hint}
         </p>
       )}
+      {requiredMessage && <FieldMessage id={messageId} message={message} />}
     </div>
   );
 }
