@@ -233,3 +233,22 @@ Das Code-Review vom 2026-11-18 fand, dass die Pfeil-Kürzel in Einrichten die Pf
 - **Raum im Hinweis mit Artikel (Nutzerentscheidung 2026-11-19):** Der Hinweis nach dem Hinzufügen heißt „… steht jetzt in der Küche“ bzw. „im Bad“ (vorher immer „im“, also „im Küche“). `inRoom` in `units.ts` nutzt dieselbe Endungsregel wie `toRoom` („zur Küche“, „zum Bad“ an Türen), beide aus `FEMININE_ROOM`. Grenze wie bisher: Namen außerhalb der Regel (etwa „Loggia“) bekommen „im“. Der zweite Satz heißt „Zieh das Möbel an seinen Platz.“ (vorher „Zieh es …“, falsch bei Sessel, Tisch, Lampe); so passt er zu jedem Möbel ohne Regel nach Geschlecht.
 
 **Grund:** Behebt die Ursache für alle Kürzel statt nur für die Pfeiltasten in Einrichten; ein Kürzel nimmt einem Element nie mehr eine Taste weg, die es selbst braucht (WCAG 2.1.1).
+
+## MD Abschluss (2026-11-22)
+
+### D-035 Service Worker: Vorschau auch ohne Schrägstrich ausgenommen
+
+Bei der Abnahme zeigte das Handy unter `…/wandelbar/preview` die Platzhalter-Seite der Hauptversion. Ursache: Der Service Worker der Hauptversion (Bereich `/wandelbar/`) nahm nur `/wandelbar/preview/` mit Schrägstrich von seinem Navigations-Fallback aus; ohne Schrägstrich lieferte er seine eigene `index.html` aus. Im Browser nachgestellt. Die Regel in `navigateFallbackDenylist` heißt jetzt `^/wandelbar/preview(?:[/?]|$)`: mit und ohne Schrägstrich, auch mit Suchanfrage, aber nicht `/wandelbar/preview-…`. Ein E2E-Test in `offline.spec.ts` prüft alle drei Schreibweisen und als Gegenprobe einen anderen Pfad; mit der alten Regel schlägt er an.
+**Folgen:** Wirkt erst, wenn `main` neu veröffentlicht ist; bis dahin `/wandelbar/preview/` mit Schrägstrich öffnen. Die Adresse ohne Schrägstrich liegt nie im Bereich des Service Workers der Vorschau (`/wandelbar/preview/`), sondern immer in dem der Hauptversion.
+
+### D-036 Bedienkonzept: Auswahl, Ziehen und Ansicht (Nutzerentscheidung)
+
+Zwei Funde der Abnahme: Am Handy verschob man ein Möbel, wenn man beim Drehen des Puppenhauses auf ihm ansetzte, denn Ziehen griff jedes Möbel, auch ein nicht gewähltes. Am PC verdeckte die Karte beim Ziehen die Sicht. Der Nutzer wollte die Steuerung grundsätzlich klären und hat in vier Fragen entschieden (Konzept in `docs/PLAN.md` unter „Bedienkonzept“):
+
+1. **Erst wählen, dann ziehen** statt „Halten zum Greifen“ oder direktem Greifen wie bisher.
+2. **Die Karte blendet sich beim Ziehen aus** statt einer kleinen Leiste am Objekt oder einer festen Seitenleiste.
+3. **Werkzeug- und Ansichtsleiste getrennt** statt nur neuer Namen. „Verschieben“ las sich in Einrichten als „Möbel verschieben“.
+4. **Auswählen und Flächen bleiben getrennte Werkzeuge**, in Flächen sind Möbel für den Tipp durchlässig, statt alles mit Auswählen zu wählen.
+
+**Grund:** Eine Regel für alle Eingaben, die sich in einem Satz erklären lässt, ohne versteckte Gesten. Im echten 3D liegen Wände und Böden überall; ein Tipp zum Abwählen darf dort keine Karte öffnen.
+**Folgen:** Aus D-031 wandert das Werkzeug Verschieben aus der Palette als Schalter „Ansicht verschieben“ in die Ansichtsleiste; die übrigen Wege zum Verschieben (rechte oder mittlere Taste, Strg, Umschalt, Leertaste, zwei Finger) bleiben. Umsetzung in M2, M3, M4 und M5b, der Prototyp bleibt bis dahin unverändert. Die kleine Leiste statt der Karte lässt sich in M4 oder M5b neu prüfen, wenn die Karten mit Tapeten und Materialien voller werden.
