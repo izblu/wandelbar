@@ -1,6 +1,18 @@
 # Status – Wandelbar
 
-**Stand:** 2026-11-14 – Design-System A4 „Sonnenstand“ fertig und gepusht. Klickbarer Prototyp der Kernabläufe gestylt, im Browser durchgeklickt (PC und Handy, hell und dunkel) und dem Nutzer vorgeführt; Feedback 1 behoben, Feedback 2 (Verschieben im Puppenhaus) am 2026-11-16 umgesetzt und vom Nutzer freigegeben; Feedback 3 (Licht im Puppenhaus: Lampen, Tageslicht, Sonne) am 2026-11-16 in drei Runden umgesetzt und vom Nutzer freigegeben. **Prototyp am 2026-11-16 vom Nutzer als Ganzes freigegeben.** 2026-11-18: Unit- und E2E-Tests in eigener Test-Session geschrieben; zwei gefundene Fehler (Wandfarben, Drehpunkt) auf Wunsch des Nutzers in eigenen Sessions behoben. 2026-11-19: Code-Review mit 13 Funden, alle entschieden: zehn behoben (D-034), zwei vertagt (Einführung), einer für M1 vorgemerkt; `npm run check` grün. 2026-11-21: voller `npm run check` erneut grün, in sieben Commits gesichert (`447d874` bis `14fee42`) und gepusht; Workflow grün, die Vorschau unter `/wandelbar/preview/` zeigt den Prototyp. Danach in eigener Test-Session Tests für die Korrekturen aus dem Code-Review geschrieben (12 Unit-, 6 neue E2E-Tests), noch nicht committet.
+**Stand:** 2026-11-14 – Design-System A4 „Sonnenstand“ fertig und gepusht. Klickbarer Prototyp der Kernabläufe gestylt, im Browser durchgeklickt (PC und Handy, hell und dunkel) und dem Nutzer vorgeführt; Feedback 1 behoben, Feedback 2 (Verschieben im Puppenhaus) am 2026-11-16 umgesetzt und vom Nutzer freigegeben; Feedback 3 (Licht im Puppenhaus: Lampen, Tageslicht, Sonne) am 2026-11-16 in drei Runden umgesetzt und vom Nutzer freigegeben. **Prototyp am 2026-11-16 vom Nutzer als Ganzes freigegeben.** 2026-11-18: Unit- und E2E-Tests in eigener Test-Session geschrieben; zwei gefundene Fehler (Wandfarben, Drehpunkt) auf Wunsch des Nutzers in eigenen Sessions behoben. 2026-11-19: Code-Review mit 13 Funden, alle entschieden: zehn behoben (D-034), zwei vertagt (Einführung), einer für M1 vorgemerkt; `npm run check` grün. 2026-11-21: voller `npm run check` erneut grün, in sieben Commits gesichert (`447d874` bis `14fee42`) und gepusht; Workflow grün, die Vorschau unter `/wandelbar/preview/` zeigt den Prototyp. Danach in eigener Test-Session Tests für die Korrekturen aus dem Code-Review geschrieben (12 Unit-, 6 neue E2E-Tests), committet und gepusht (`27ea0a4`). 2026-11-22: neue Ordnung für die Sessions mit dem Nutzer vereinbart (siehe „Nächster Schritt“).
+
+## Nächster Schritt
+
+**Ordnung der Sessions (seit 2026-11-22, Regeln in `CLAUDE.md` unter „Sessions“):** Hauptsessions startet der Nutzer selbst mit einem kurzen Startsatz. Den Auftrag finden sie hier. Untersessions pro Feature starten nur die Hauptsessions. Bau und Tests schreiben jeweils nur in ihren eigenen Abschnitt dieser Datei.
+
+1. **„MD · Abschluss“** (Gruppe „Wandelbar“, Startsatz: „Starte den MD-Abschluss laut `docs/STATUS.md`.“):
+   - Abnahme-Checkliste mit dem Nutzer: PC, Android über `npm run dev -- --host`, Installation und Offline-Betrieb über `/wandelbar/preview/`. Kleine Funde in dieser Session beheben, größere nach Rückfrage in einer Untersession.
+   - Nordrichtung und Sonnenstand: mit dem Nutzer klären, ob beides als Planergänzung in `docs/PLAN.md` kommt (siehe „Was aus der Wahl folgt“ unter Runde 2).
+   - Auf Wunsch des Nutzers diese Datei kürzen: die Einzelheiten aus MD in eine Archivdatei, hier nur noch Stand, nächster Schritt und offene Punkte.
+   - Commits, Push, PR `milestone/md-design` → `main` und Merge, jeweils nach Bestätigung und nach der Prüfung laut `CLAUDE.md`.
+   - Zum Schluss fragen, ob die Session archiviert werden darf.
+2. **„M1 · Bau“** (Startsatz: „Starte M1 laut `docs/STATUS.md`.“): Branch `milestone/m1-datenmodell` von `main` anlegen, Gruppe „Wandelbar · M1 Datenmodell“ anlegen und sich hineinverschieben, M1 laut `docs/PLAN.md` mit dem Nutzer in Features schneiden. Den offenen Punkt für M1 unter „Offene Punkte“ beachten.
 
 ## Erledigt
 
