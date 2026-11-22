@@ -193,8 +193,10 @@ export default defineConfig(({ mode }) => {
           // Ohne `clientsClaim` steuert der Service Worker die Seite erst nach dem nächsten Laden.
           skipWaiting: true,
           clientsClaim: true,
-          // Der Service Worker der Hauptversion darf die Vorschau nie ausliefern.
-          navigateFallbackDenylist: channel === 'production' ? [/^\/wandelbar\/preview\//] : [],
+          // Der Service Worker der Hauptversion darf die Vorschau nie ausliefern, auch nicht
+          // unter `/wandelbar/preview` ohne Schrägstrich (so tippt man es am Handy oft ein).
+          navigateFallbackDenylist:
+            channel === 'production' ? [/^\/wandelbar\/preview(?:[/?]|$)/] : [],
         },
         devOptions: {
           enabled: false,
