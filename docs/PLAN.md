@@ -31,6 +31,7 @@ Der Projektordner `Room Planer 3D` ist leer (Neuentwicklung) und wird zu `Wandel
 - **Licht und Grafik:**
   - Echtzeit-Grafik mit automatischen Qualitätsstufen.
   - **Lichtmodus umschaltbar:** *Planungslicht* (gleichmäßig, ohne Schatten, Standard beim Einrichten), *Tageslicht* und *Abend* (Lampen leuchten).
+  - **Sonnenstand** (mit dir festgelegt am 2026-11-22): Die Sonne steht nach Uhrzeit und Jahreszeit richtig am Himmel und fällt durch die Fenster; dafür hat jeder Grundriss eine Nordrichtung. Der Ort ist fest Deutschland, ohne Ortung und ohne Abfrage.
   - Jede Lampe lässt sich einzeln ein- und ausschalten, Schatten separat.
   - Fotorealistische Standbilder per Pathtracing (PC).
 - **Oberflächen:**
@@ -80,6 +81,16 @@ Die Entwürfe liegen als HTML in `design/explorations/` und werden in der Browse
 - Befehlssuche mit Strg+K.
 - Auf dem Handy: ausziehbare Karten von unten und Bedienung im Daumenbereich.
 
+**Auswahl, Ziehen und Ansicht** (mit dir festgelegt am 2026-11-22 nach der Abnahme des Prototyps; gilt gleich für PC und Handy, Maus und Finger):
+- **Erst wählen, dann ziehen:** Nur ein ausgewähltes Objekt folgt Finger oder Maus. Ziehen auf einem nicht gewählten Objekt oder auf freier Fläche ändert nur die Ansicht (Draufsicht: verschieben, Puppenhaus: drehen). Das gewählte Objekt zeigt, dass man es greifen kann (Rahmen, Greif-Zeiger, auf dem Handy leicht angehoben). Das gilt für Möbel ebenso wie für Wände, Türen und Fenster.
+- **Die Karte geht aus dem Weg:** Beim Ziehen eines Objekts und beim Drehen, Verschieben oder Zoomen der Ansicht blendet sich die Eigenschaftenkarte aus. Nach dem Loslassen erscheint sie wieder neben dem Objekt, ohne es zu verdecken. Auf dem Handy rutscht das Blatt dabei bis auf den Griff nach unten.
+- **Die Werkzeugleiste bearbeitet, die Ansichtsleiste schaut:**
+  - Werkzeugleiste nur mit dem, was man an der Wohnung tut, z. B. Einrichten: Auswählen, Möbel hinzufügen, Flächen, Messen, Rückgängig, Wiederholen; Erleben: Umsehen, Rundgang, Foto.
+  - Ansichtsleiste mit allem, was nur den Blick ändert: Draufsicht oder Puppenhaus, Zoom, Tageszeit und der Schalter „Ansicht verschieben“ (Hand). Er legt fest, ob ein Finger im Puppenhaus dreht oder verschiebt.
+- **Ein Tipp wählt je nach Werkzeug:** „Auswählen“ wählt Möbel; ein Tipp auf freie Fläche hebt die Auswahl auf. „Flächen“ wählt Wände, Böden und Decken; Möbel sind dabei für den Tipp durchlässig, er trifft den Boden darunter.
+- **Bleibt wie im Prototyp:** Zwei Finger ändern immer die Ansicht, nie ein Objekt. Esc hebt die Auswahl auf; Pfeiltasten, R und Entf wirken auf das gewählte Objekt. Ein neues Möbel aus dem Katalog ist sofort gewählt und lässt sich direkt ziehen.
+- **Umsetzung:** M2 (Wände, Türen und Fenster im 2D-Editor), M3 (Kamera und Ansichtsleiste), M4 (Werkzeug Flächen), M5b (Möbel platzieren). Der Prototyp bleibt bis dahin, wie er ist.
+
 **Erster Start:**
 - Eine fertig eingerichtete **Beispielwohnung**, in der man sofort herumlaufen kann.
 - Eine Einführung mit 3–4 Schritten direkt in der Oberfläche, dazu kontextuelle Tipps beim ersten Benutzen eines Werkzeugs.
@@ -127,7 +138,7 @@ Die Entwürfe liegen als HTML in `design/explorations/` und werden in der Browse
 - Gesteuert wird das über die Offline-Status-Seite.
 
 **Datenmodell** (intern Meter, Anzeige in cm/m; Schema versioniert, mit Migrationen):
-- `Project`: Name, `schemaVersion`, `sourcePlan` (Datei, Kalibrierung), `level` (genau eine Etage), `variants[]` (mindestens eine), `activeVariantId`
+- `Project`: Name, `schemaVersion`, `sourcePlan` (Datei, Kalibrierung), `north` (Nordrichtung des Grundrisses in Grad), `level` (genau eine Etage), `variants[]` (mindestens eine), `activeVariantId`
 - `Level`: `walls[]` (Start, Ende, Dicke, Höhe optional), `openings[]` (wallId, Typ Tür/Fenster, Abstand, Breite, Höhe, Brüstung, Anschlag), `rooms[]` (aus geschlossenen Wandzügen berechnet; Name, Deckenhöhe)
 - `Variant`:
   - `wallFinishes`: Wandseiten-ID zu Bereichen `{x0, x1, y0, y1, finish}`
@@ -135,7 +146,7 @@ Die Entwürfe liegen als HTML in `design/explorations/` und werden in der Browse
   - Böden und Decken pro Raum
   - `furniture[]`
   - `lights[]` (an/aus, Farbe, Helligkeit)
-  - `lightMode`
+  - `lightMode`, dazu Uhrzeit und Jahreszeit für das Tageslicht
 - `FurnitureInstance`: Katalogbezug, Position, Drehung, Montageart (Boden, Wand, Decke oder auf einem anderen Möbel), Material-Überschreibungen, Preis und Link
 - `CatalogItem`: Art (Box, parametrisch, eingebaut oder importiert), Parameter, Maße, Asset, Teil-Materialien. Die globale Sammlung liegt in einer eigenen Tabelle.
 
@@ -182,6 +193,7 @@ Die Entwürfe liegen als HTML in `design/explorations/` und werden in der Browse
 - **M1 Datenmodell und Speicherung:** Schema und Migrationen, Dexie mit automatischem Speichern, Rückgängig/Wiederholen, Projektliste, Export und Import von `.wandelbar`, Erinnerung an Sicherungen.
 - **M2 2D-Editor:**
   - Bild oder PDF als Hintergrund, Kalibrierung über eine Referenzstrecke
+  - Nordrichtung mit dem Kompass wie im Prototyp
   - Wände zeichnen und bearbeiten mit Einrasten, Dicke einstellen
   - Türen und Fenster setzen
   - Raumerkennung mit Name, Fläche und Höhe; Bemaßung
@@ -208,7 +220,7 @@ Die Entwürfe liegen als HTML in `design/explorations/` und werden in der Browse
 - **M7 Varianten und Vergleich:** Varianten anlegen, kopieren und umschalten; geteilte Ansicht mit synchronisierter Kamera; Vorher/Nachher-Schieber.
 
 **Welle B, parallel ab M5b:**
-- **M8 Licht und Rendern** (parallele Session): Lichtmodi *Tageslicht* und *Abend*, Lampen einzeln an und aus, Schattenbudget pro Qualitätsstufe, Pathtracer-Standbilder, Screenshots.
+- **M8 Licht und Rendern** (parallele Session): Lichtmodi *Tageslicht* und *Abend*, Sonnenstand nach Uhrzeit und Jahreszeit (gerichtetes Licht durch die Fenster; Tageszeit-Regler und Jahreszeit in der Ansichtsleiste), Lampen einzeln an und aus, Lichtfarbe je Lichtquelle (warmweiß, neutralweiß, RGB) und eine gemeinsame Lichtfarbe für alle Lampen (ohne Sonnenlicht), Schattenbudget pro Qualitätsstufe, Pathtracer-Standbilder, Screenshots.
 - **M9 Exporte** (parallele Session): 2D-Plan als PNG/PDF, Einkaufsliste als CSV/PDF, GLB.
 
 **Danach:**

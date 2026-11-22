@@ -1,0 +1,223 @@
+/*
+ * Felder, Häkchen, Schalter und Farbfelder (aus A4 „Sonnenstand“).
+ * Gefüllte, eingelassene Flächen; beim Fokus eine Kante in Fjordblau.
+ */
+
+@layer components {
+  .wb-field {
+    display: grid;
+    align-content: start;
+    gap: var(--space-1);
+  }
+
+  .wb-field-label {
+    color: var(--color-ink-muted);
+    font-size: var(--text-xs);
+  }
+
+  .wb-field-box {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    height: var(--control-l);
+    padding: 0 var(--space-2-5);
+    border: 1px solid transparent;
+    border-radius: var(--radius-m);
+    background: var(--color-surface-sunk);
+    transition: border-color var(--duration-base) var(--ease-standard);
+  }
+
+  .wb-field-box:hover {
+    border-color: var(--color-line-strong);
+  }
+
+  .wb-field-box:focus-within {
+    border-color: var(--color-accent);
+    outline: 2px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
+  }
+
+  .wb-field-box[data-invalid] {
+    border-color: var(--color-danger);
+  }
+
+  .wb-field-box[data-invalid]:focus-within {
+    outline-color: color-mix(in srgb, var(--color-danger) 25%, transparent);
+  }
+
+  .wb-field-box input {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font-size: var(--text-m);
+    font-weight: var(--weight-semibold);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wb-field-unit {
+    color: var(--color-ink-muted);
+    font-size: var(--text-xs);
+  }
+
+  .wb-field-hint {
+    color: var(--color-ink-muted);
+    font-size: var(--text-xs);
+  }
+
+  .wb-field-message {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-1-5);
+    color: var(--color-danger);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-tight);
+  }
+
+  .wb-field-message .wb-icon {
+    flex: none;
+    margin-top: -1px;
+  }
+
+  /* ------------------------------------------------------------ Maße */
+
+  .wb-dimensions {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .wb-dimensions > .wb-row-label {
+    margin-bottom: 0;
+  }
+
+  .wb-dimensions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+  }
+
+  /* ------------------------------------------------------------ Häkchen */
+
+  .wb-check {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--space-6);
+    font-size: var(--text-s);
+    cursor: pointer;
+  }
+
+  .wb-check input {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--color-accent);
+    cursor: pointer;
+  }
+
+  /* ------------------------------------------------------------ Schalter */
+
+  .wb-switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: var(--control-s);
+    font-size: var(--text-s);
+    cursor: pointer;
+  }
+
+  .wb-switch-input {
+    position: relative;
+    flex: none;
+    width: 40px;
+    height: 24px;
+    margin: 0;
+    border-radius: var(--radius-pill);
+    background: var(--color-ink-muted);
+    appearance: none;
+    cursor: pointer;
+    transition: background-color var(--duration-base) var(--ease-standard);
+  }
+
+  .wb-switch-input::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-surface-raised);
+    box-shadow: var(--shadow-float);
+    transition: translate var(--duration-moderate) var(--ease-standard);
+  }
+
+  .wb-switch-input:checked {
+    background: var(--color-accent);
+  }
+
+  .wb-switch-input:checked::before {
+    background: var(--color-on-accent);
+    translate: 16px 0;
+  }
+
+  .wb-switch-input:disabled,
+  .wb-check input:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* ------------------------------------------------------------ Farbfelder */
+
+  .wb-swatches .wb-row-label {
+    display: flex;
+    align-items: baseline;
+  }
+
+  .wb-swatch-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2-5);
+  }
+
+  .wb-swatch {
+    position: relative;
+    width: var(--control-s);
+    height: var(--control-s);
+    border-radius: var(--radius-pill);
+    background: var(--swatch);
+    box-shadow: var(--swatch-shade);
+    cursor: pointer;
+    transition: translate var(--duration-moderate) var(--ease-standard);
+  }
+
+  .wb-swatch:hover {
+    translate: 0 -2px;
+  }
+
+  .wb-swatch input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .wb-swatch:has(input:checked) {
+    box-shadow:
+      var(--swatch-shade),
+      0 0 0 2px var(--color-surface-raised),
+      0 0 0 4px var(--color-accent);
+  }
+
+  .wb-swatch:has(input:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 5px;
+  }
+}

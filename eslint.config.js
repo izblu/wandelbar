@@ -39,5 +39,12 @@ export default defineConfig([
       globals: globals.node,
     },
   },
+  {
+    // Design-Entwürfe (MD): reines Browser-JavaScript ohne Build
+    files: ['design/**/*.js'],
+    languageOptions: {
+      globals: globals.browser,
+    },
+  },
   prettier,
 ]);

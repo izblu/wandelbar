@@ -19,8 +19,24 @@ Wandelbar ist eine installierbare Web-App (PWA): Aus einem Grundriss (Bild oder 
   - Parallele Sessions: `parallel/<kürzel>-<thema>`, z. B. `parallel/m10-erkennung`. Sie werden über den PR geprüft, aber nicht veröffentlicht, damit sie sich die Vorschau nicht gegenseitig überschreiben.
 - **Autonomie:** Technikentscheidungen selbst treffen und kurz in `docs/DECISIONS.md` festhalten. **Vorher fragen** bei allem Sichtbaren und der Bedienung, bei Planabweichungen, bei Lizenz- oder Datenschutzfolgen, bei neuen Abhängigkeiten über 1 MB und bei Kosten. Fragen einzeln stellen, jeweils mit Empfehlung.
 - **Sprachen:** Bezeichner im Code englisch. Kommentare, Dokumentation, Commits und PRs deutsch. Mit dem Nutzer Deutsch sprechen.
-- **Kontext:** möglichst ein Meilenstein pro Chat. `docs/STATUS.md` nach jedem Arbeitsblock aktualisieren. Ab etwa 200.000 Token den Stand in STATUS festhalten und an eine neue Session übergeben.
+- **Kontext:** möglichst ein Meilenstein pro Chat. `docs/STATUS.md` nach jedem Arbeitsblock aktualisieren. Am Ende eines Meilensteins wandern seine Einzelheiten nach `docs/archive/STATUS-<Kürzel>.md`; STATUS behält nur Stand, nächsten Schritt und offene Punkte. Ab etwa 200.000 Token den Stand in STATUS festhalten und an eine neue Session übergeben, die der Nutzer selbst startet (siehe „Sessions“).
+- **Prüfen in zwei Stufen** (vom Nutzer so gewünscht, weil der volle Lauf vor allem durch die E2E-Tests lange dauert):
+  - **Zwischendurch** während der Arbeit (Bau-Untersessions): `npm run check:fast`. Betrifft eine Änderung bestimmte E2E-Tests, startet die Tests-Session nur diese gezielt, z. B. `npx playwright test e2e/core-flows.spec.ts`.
+  - **Vor jedem Commit-Vorschlag:** der volle `npm run check` mit allen E2E-Tests (Datenschutz, Offline, axe). Im Meilenstein läuft er in der Tests-Session.
+  - **Sofort voll prüfen** nach Änderungen an CSP, Service Worker, `vite.config.ts` oder Abhängigkeiten. Fremde Anfragen und den Offline-Betrieb prüfen nur die E2E-Tests.
+  - Im Bericht an den Nutzer sagen, welche Stufe gelaufen ist.
 - **Testdaten:** In `fixtures/` liegen nur frei lizenzierte Pläne. Private Grundrisse und Projekte gehören nach `fixtures/private/` (per `.gitignore` ausgeschlossen) und kommen nie ins Repo.
+
+## Sessions
+
+Vom Nutzer am 2026-11-22 so festgelegt, damit er den Überblick behält und keine Ketten von Sessions entstehen.
+
+- **Gruppen:** „Wandelbar“ für Projektweites (Lern-Chat, Gespräche, Abschlüsse). Je Meilenstein eine Gruppe „Wandelbar · M1 Datenmodell“; die Bau-Hauptsession legt sie beim Start an und verschiebt sich hinein. btw-Sessions in die Gruppe des laufenden Meilensteins.
+- **Titel:** `M1 · Bau`, `M1 · Tests`, nach einer Übergabe `M1 · Bau 2`, Untersessions `M1 · Bau · Speichern`. Jede Session setzt ihren Titel beim Start.
+- **Starten:** Hauptsessions startet der Nutzer mit einem Startsatz; der Auftrag steht in `docs/STATUS.md`. Untersessions pro Feature starten nur die Hauptsessions, und nur bei spürbar viel Arbeit; sie starten nie selbst Sessions. Es schreibt immer nur eine Session gleichzeitig Code.
+- **Aufgaben:** Bau plant, startet Features und prüft im Browser; Bau-Untersessions nutzen `npm run check:fast`. Tests schreibt Unit- und E2E-Tests, prüft mit `npm run check`, sucht Fehler und macht das Code-Review. Kleine, unsichtbare Funde behebt Tests selbst und meldet sie, alles andere geht an Bau. Kein Fund bekommt eine eigene Session.
+- **Meldungen:** Untersessions melden automatisch an ihre Hauptsession. Bau und Tests schreiben in ihren eigenen Abschnitt von `docs/STATUS.md` und schicken sich eine kurze Nachricht. Nichts wird weitergereicht.
+- **Archivieren** nur nach Frage, gesammelt: Untersession nach Abnahme, btw nach Antwort, alte Session nach Übergabe, am Meilenstein-Ende alles samt Gruppe.
 
 ## Befehle
 
@@ -38,7 +54,8 @@ Node.js 26 (LTS) liegt unter `C:\Program Files\nodejs`. Kennt eine ältere Shell
 | `npm run typecheck`              | `tsc -b`                                                                     |
 | `npm test`                       | Unit-Tests (Vitest), Dateien `src/**/*.test.ts(x)`                           |
 | `npm run test:e2e`               | Playwright gegen den Produktions-Build, Desktop-Chromium und Pixel-Emulation |
-| `npm run check`                  | Alles oben nacheinander, wie in CI                                           |
+| `npm run check:fast`             | Format, Lint, Typen und Unit-Tests, ohne E2E (für zwischendurch)             |
+| `npm run check`                  | Alles inklusive E2E, wie in CI (vor jedem Commit-Vorschlag)                  |
 | `node scripts/generate-icons.ts` | PWA-Icons aus `public/favicon.svg` neu erzeugen                              |
 
 Playwright braucht einmalig `npx playwright install --only-shell chromium`.

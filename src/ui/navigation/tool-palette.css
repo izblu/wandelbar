@@ -1,0 +1,119 @@
+@layer components {
+  .wb-tool-palette {
+    display: flex;
+    gap: var(--space-0-5);
+    padding: var(--space-1-5);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    box-shadow: var(--elevation-float);
+  }
+
+  .wb-tool-palette[data-orientation='vertical'] {
+    flex-direction: column;
+  }
+
+  .wb-tool-palette[data-orientation='horizontal'] {
+    padding: 5px;
+  }
+
+  .wb-tool {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--control-tool);
+    height: var(--control-tool);
+    border-radius: var(--radius-pill);
+    color: var(--color-ink-muted);
+    transition:
+      background-color var(--duration-moderate) var(--ease-standard),
+      color var(--duration-moderate) var(--ease-standard);
+  }
+
+  .wb-tool:hover:not([aria-disabled='true']) {
+    background: var(--color-surface-hover);
+    color: var(--color-ink);
+  }
+
+  .wb-tool[aria-pressed='true'],
+  .wb-tool[aria-pressed='true']:hover {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  /* Gesperrt bleibt fokussierbar (aria-disabled), damit die Pfeiltasten nicht hängen bleiben */
+  .wb-tool[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  /* Hinweis mit Name und Taste. Bleibt im Barrierebaum, denn er trägt den Namen des Knopfs. */
+  .wb-tool-tip {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + var(--space-3-5));
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2-5);
+    padding: var(--space-1-5) var(--space-1-5) var(--space-1-5) var(--space-3);
+    border-radius: var(--radius-m);
+    background: var(--color-tooltip);
+    color: var(--color-on-tooltip);
+    font-size: var(--text-s);
+    font-weight: var(--weight-medium);
+    white-space: nowrap;
+    opacity: 0;
+    translate: -4px -50%;
+    pointer-events: none;
+    transition:
+      opacity var(--duration-quick) var(--ease-standard),
+      translate var(--duration-moderate) var(--ease-standard);
+  }
+
+  .wb-tool-tip:not(:has(.wb-tool-key)) {
+    padding-right: var(--space-3);
+  }
+
+  .wb-tool-key {
+    display: inline-grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 var(--space-1-5);
+    border-radius: var(--radius-s);
+    background: color-mix(in srgb, var(--color-on-tooltip) 18%, transparent);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .wb-tool:hover .wb-tool-tip,
+  .wb-tool:focus-visible .wb-tool-tip {
+    opacity: 1;
+    translate: 0 -50%;
+  }
+
+  /* Waagerecht (Handy): Hinweis nur für Bildschirmleser, nie mit display: none */
+  .wb-tool-palette[data-orientation='horizontal'] .wb-tool-tip {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .wb-tool-separator {
+    flex: none;
+    width: 24px;
+    height: 1px;
+    margin: var(--space-1-5) auto;
+    background: var(--color-line-strong);
+  }
+
+  .wb-tool-palette[data-orientation='horizontal'] .wb-tool-separator {
+    width: 1px;
+    height: 24px;
+    margin: auto var(--space-1);
+  }
+}

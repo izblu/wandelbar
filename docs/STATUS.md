@@ -1,37 +1,25 @@
 # Status – Wandelbar
 
-**Stand:** 2026-11-13 – M0 abgeschlossen, als Nächstes MD.
+**Stand:** 2026-11-22 – M0 und MD abgeschlossen. Das Design-System „Sonnenstand“ und der klickbare Prototyp sind vom Nutzer abgenommen. Dazu kamen als Planergänzungen das Bedienkonzept „Auswahl, Ziehen und Ansicht“ und der Sonnenstand nach Uhrzeit und Jahreszeit (`docs/PLAN.md`, D-035 und D-036). Der Pull Request `milestone/md-design` → `main` macht den Prototyp zur Hauptversion unter <https://izblu.github.io/wandelbar/>. Einzelheiten zu den abgeschlossenen Meilensteinen stehen in `docs/archive/STATUS-M0.md` und `docs/archive/STATUS-MD.md`.
 
-## Erledigt
+## Nächster Schritt
 
-- Planungsgespräch abgeschlossen, Plan freigegeben (`docs/PLAN.md`).
-- Name festgelegt: **Wandelbar** (Repo `wandelbar`, Endung `.wandelbar`).
-- Arbeitsabsprachen im Claude-Gedächtnis und in `CLAUDE.md` festgehalten.
-- **M0 Einrichtung:**
-  - Node.js 26.13.1 (LTS) per winget installiert.
-  - Vite 8, React 19 und TypeScript 6.0 (strict) direkt im Projektordner. Basis `/wandelbar/`, für die Vorschau `/wandelbar/preview/`, gesteuert über `WANDELBAR_CHANNEL`.
-  - ESLint 10 (typgeprüft), Prettier, Vitest, Playwright (Desktop-Chromium und Pixel 7) und axe-core.
-  - CSP als Meta-Tag genau wie im Plan, PWA mit vite-plugin-pwa (Manifest „Wandelbar“, Service Worker, Sperrliste für `/preview/`). Keine externen Ressourcen.
-  - Tests: Unit-Test (Datenbankname mit Basis-Pfad), Datenschutz-Test mit zwei Gegenproben, Offline-Test, axe-Test hell und dunkel. Alle grün.
-  - GitHub Actions `pages.yml`: Prüfen bei jedem Push und PR; `main` wird in die Wurzel und `milestone/*` nach `/preview/` des Branches `gh-pages` veröffentlicht.
-  - `CLAUDE.md`, `docs/DECISIONS.md`, `LICENSE` (MIT), `THIRD_PARTY_LICENSES.md`, `README.md`, `.gitignore` (schließt `fixtures/private/` aus).
-  - Öffentliches Repo [izblu/wandelbar](https://github.com/izblu/wandelbar). Commits laufen über die noreply-Adresse von GitHub (nur in diesem Repo eingestellt).
-  - Der erste Workflow-Lauf war grün (Prüfen 1:32 min, Veröffentlichen 20 s). GitHub Pages liefert den Branch `gh-pages` aus.
-  - **Live:** <https://izblu.github.io/wandelbar/>. Service Worker aktiv, CSP wortgleich, keine Konsolenfehler. `/preview/` ist noch leer und wird mit dem ersten `milestone/*`-Push befüllt.
+**Ordnung der Sessions:** Regeln in `CLAUDE.md` unter „Sessions“. Hauptsessions startet der Nutzer selbst mit einem kurzen Startsatz; den Auftrag finden sie hier. Bau und Tests legen beim Start je einen eigenen Abschnitt in dieser Datei an (`## M1 · Bau`, `## M1 · Tests`) und schreiben nur dort.
 
-## Als Nächstes: MD Designphase
-
-1. **Runde 1:** drei Richtungen (_ruhig, hell und wohnlich_ / _mutig und editorial_ / _verspielt und farbig_), jeweils am Bildschirm „Einrichten“ für PC und Handy, als HTML in `design/explorations/`, gezeigt in der Browser-Vorschau.
-2. Runde 2: Verfeinerung des Gewinners.
-3. Design-System (Tokens, Icons, Bausteine), klickbarer Prototyp im echten Stack, Feedback.
-
-Branch dafür: `milestone/md-design`. Der Skill `frontend-design` wird genutzt.
+1. **„M1 · Bau“** (Startsatz: „Starte M1 laut `docs/STATUS.md`.“): Branch `milestone/m1-datenmodell` von `main` anlegen, Gruppe „Wandelbar · M1 Datenmodell“ anlegen und sich hineinverschieben, M1 laut `docs/PLAN.md` mit dem Nutzer in Features schneiden. Die Punkte „Für M1“ unter „Offene Punkte“ beachten.
 
 ## Offene Punkte
 
-- **Vorläufig bis MD:** App-Icon, Grundstile und automatisches Service-Worker-Update. Mit Projektdaten ab M1 braucht es eine Update-Meldung (siehe D-006).
-- **Rückfrage möglich:** CSP um `base-uri 'self'`, `form-action 'self'` und `object-src 'none'` härten (siehe D-005).
+- **Für M1:**
+  - **Neue eigene Wohnung ersetzt die alte ohne Rückfrage** (Code-Review 2026-11-19): „Neue Wohnung aus Grundriss“ verwirft eine vorhandene eigene Wohnung ohne Rückfrage und ohne Rückgängig (`newOwn` in `projects.ts`). Mit dem Speichern klären, ob es mehrere eigene Wohnungen gibt; sonst vorher fragen.
+  - **Update-Meldung:** Mit Projektdaten braucht es statt des automatischen Service-Worker-Updates eine Meldung in der Oberfläche (`registerType: 'prompt'`, D-006). Die Gestaltung mit dem Nutzer klären.
+  - **Datenmodell:** Nordrichtung `north` am Projekt, Uhrzeit und Jahreszeit für das Tageslicht an der Variante (`docs/PLAN.md`, „Datenmodell“).
+- **Installation und Offline am Handy** (Rest der MD-Abnahme): Der Nutzer prüft es nach dem Merge an der Hauptversion. Bis dahin funktioniert die Vorschau nur unter `/wandelbar/preview/` mit Schrägstrich (D-035).
+- **Prüfpunkte aus der MD-Abnahme (2026-11-22):**
+  - **Bedienkonzept umsetzen** (`docs/PLAN.md` unter „Bedienkonzept“, D-036): M2 Wände, Türen und Fenster; M3 Kamera und Ansichtsleiste; M4 Werkzeug Flächen; M5b Möbel platzieren.
+  - **M3:** Das Puppenhaus braucht eine Kamera mit Perspektive. Im Platzhalter wirkten hintere Wände breiter als vordere, weil er ohne Perspektive zeichnet.
+  - **M5b:** Möbel ließen sich in eine Wand zwischen zwei Räumen stellen. Einrasten an Wänden und Kollisionswarnung prüfen.
+- **Einführung (vertagt, Nutzerentscheidung 2026-11-19):** Sie wird erst geplant und umgesetzt, wenn die App fertig ist, und bleibt bis dahin wie im Prototyp. Dann beachten: Solange sie offen ist, zwingt sie bei jedem Schrittwechsel nach Erleben (`Tour.tsx`, Effekt mit `goTo('experience')`), und ihr Schritt 1 hat im Planungslicht kein Ziel (`.wb-sun-time` fehlt).
+- **App-Icon:** noch das vorläufige aus M0. Im Stil „Sonnenstand“ neu gestalten; den Zeitpunkt mit dem Nutzer klären.
+- **Rückfrage möglich:** CSP um `base-uri 'self'`, `form-action 'self'` und `object-src 'none'` härten (D-005).
 - TypeScript 7 einsetzen, sobald typescript-eslint ihn unterstützt (D-001).
-- Neue Shells kennen Node.js nach der Installation; in schon offenen Terminals oder der Claude-App fehlt es bis zum Neustart im PATH.
-- Den leeren alten Ordner `C:\Users\Guenay\Coding Projects\Room Planer 3D` löschen (**nach Bestätigung**).
-- Commit, Push und Merge immer nur nach ausdrücklicher Bestätigung.

@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self'; img-src 'self' blob: data:; worker-src 'self' blob:; script-src 'self' 'wasm-unsafe-eval'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <title>A4 · Sonnenstand – Wandelbar Entwurf</title>
+    <link rel="stylesheet" href="shared/base.css" />
+    <link rel="stylesheet" href="styles/a-morgenlicht.css" />
+    <link rel="stylesheet" href="styles/a4-sonnenstand.css" />
+    <script type="module" src="shared/explore.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#inspector">Zu den Eigenschaften springen</a>
+
+    <main class="stage" id="stage">
+      <h1 class="sr-only">Einrichten – Lindenstraße 12</h1>
+      <svg
+        id="house"
+        class="house"
+        role="img"
+        aria-label="Puppenhaus-Ansicht der Wohnung Lindenstraße 12 mit sechs Räumen. Ausgewählt: Sofa im Wohnzimmer."
+      ></svg>
+      <svg id="overlay" class="overlay" aria-hidden="true">
+        <path class="leader" />
+        <circle class="leader-dot" r="0" />
+      </svg>
+
+      <header class="topbar">
+        <div class="brand">
+          <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+            <rect class="bm-tile" x="1" y="1" width="30" height="30" rx="10" />
+            <path class="bm-house" d="M10 23v-7.5L16 10l6 5.5V23" />
+            <circle class="bm-sun" cx="23.5" cy="8.5" r="3" />
+          </svg>
+          <span class="brand-name">Wandelbar</span>
+        </div>
+        <button class="project" type="button" aria-haspopup="menu">
+          <span class="project-name">Lindenstraße 12</span>
+          <span class="project-meta">3 Zimmer · 82 m²</span>
+          <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#chevron-down" /></svg>
+        </button>
+
+        <nav class="steps" aria-label="Arbeitsschritte">
+          <ol>
+            <li>
+              <button type="button" class="step is-done">
+                <svg class="icon step-check" aria-hidden="true">
+                  <use href="shared/icons.svg#check" />
+                </svg>
+                <span class="step-label">Grundriss</span><span class="sr-only">, erledigt</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="step is-done">
+                <svg class="icon step-check" aria-hidden="true">
+                  <use href="shared/icons.svg#check" />
+                </svg>
+                <span class="step-label">Bauen</span><span class="sr-only">, erledigt</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="step" aria-current="step">
+                <span class="step-dot" aria-hidden="true"></span>
+                <span class="step-label">Einrichten</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="step">
+                <span class="step-num" aria-hidden="true">4</span>
+                <span class="step-label">Erleben</span>
+              </button>
+            </li>
+          </ol>
+        </nav>
+
+        <div class="top-actions">
+          <button
+            class="search"
+            type="button"
+            data-action="open-search"
+            aria-keyshortcuts="Control+K"
+          >
+            <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#search" /></svg>
+            <span class="search-label">Suchen oder Befehl</span>
+            <span class="keys" aria-hidden="true"><kbd>Strg</kbd><kbd>K</kbd></span>
+          </button>
+          <button class="icon-btn" type="button" data-action="toggle-theme" aria-pressed="false">
+            <svg class="icon only-light" aria-hidden="true">
+              <use href="shared/icons.svg#moon" />
+            </svg>
+            <svg class="icon only-dark" aria-hidden="true"><use href="shared/icons.svg#sun" /></svg>
+            <span class="sr-only">Dunkles Design</span>
+          </button>
+        </div>
+      </header>
+
+      <div
+        class="toolbar"
+        role="toolbar"
+        aria-label="Werkzeuge: Einrichten"
+        aria-orientation="vertical"
+      >
+        <button
+          class="tool"
+          type="button"
+          data-tool="select"
+          aria-pressed="true"
+          aria-keyshortcuts="V"
+        >
+          <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#cursor" /></svg>
+          <span class="tool-tip"
+            ><span class="tool-label">Auswählen</span
+            ><kbd class="tool-key" aria-hidden="true">V</kbd></span
+          >
+        </button>
+        <button
+          class="tool"
+          type="button"
+          data-tool="furniture"
+          aria-pressed="false"
+          aria-keyshortcuts="M"
+        >
+          <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#sofa" /></svg>
+          <span class="tool-tip"
+            ><span class="tool-label">Möbel</span
+            ><kbd class="tool-key" aria-hidden="true">M</kbd></span
+          >
+        </button>
+        <button
+          class="tool"
+          type="button"
+          data-tool="surface"
+          aria-pressed="false"
+          aria-keyshortcuts="F"
+        >
+          <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#roller" /></svg>
+          <span class="tool-tip"
+            ><span class="tool-label">Wände &amp; Böden</span
+            ><kbd class="tool-key" aria-hidden="true">F</kbd></span
+          >
+        </button>
+        <button
+          class="tool"
+          type="button"
+          data-tool="measure"
+          aria-pressed="false"
+          aria-keyshortcuts="L"
+        >
+          <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#ruler" /></svg>
+          <span class="tool-tip"
+            ><span class="tool-label">Messen</span
+            ><kbd class="tool-key" aria-hidden="true">L</kbd></span
+          >
+        </button>
+        <span class="tool-sep" aria-hidden="true"></span>
+        <button class="tool tool-plain" type="button" aria-keyshortcuts="Control+Z">
+          <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#undo" /></svg>
+          <span class="tool-tip"
+            ><span class="tool-label">Rückgängig</span
+            ><kbd class="tool-key" aria-hidden="true">Strg Z</kbd></span
+          >
+        </button>
+        <button class="tool tool-plain" type="button" aria-keyshortcuts="Control+Y">
+          <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#redo" /></svg>
+          <span class="tool-tip"
+            ><span class="tool-label">Wiederholen</span
+            ><kbd class="tool-key" aria-hidden="true">Strg Y</kbd></span
+          >
+        </button>
+      </div>
+
+      <div class="viewbar" role="group" aria-label="Ansicht">
+        <div class="seg">
+          <button type="button" data-view="dollhouse" aria-pressed="true">
+            <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#cube" /></svg>
+            <span>Puppenhaus</span>
+          </button>
+          <button type="button" data-view="plan" aria-pressed="false">
+            <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#plan" /></svg>
+            <span>Draufsicht</span>
+          </button>
+        </div>
+        <div class="zoom">
+          <button class="icon-btn" type="button" data-action="zoom-out">
+            <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#minus" /></svg>
+            <span class="sr-only">Verkleinern</span>
+          </button>
+          <button class="icon-btn" type="button" data-action="zoom-in">
+            <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#plus" /></svg>
+            <span class="sr-only">Vergrößern</span>
+          </button>
+        </div>
+        <div class="sunbar">
+          <svg class="icon only-day" aria-hidden="true"><use href="shared/icons.svg#sun" /></svg>
+          <svg class="icon only-night" aria-hidden="true">
+            <use href="shared/icons.svg#moon" />
+          </svg>
+          <label class="sun-label" for="sun-time">Tageszeit</label>
+          <input
+            id="sun-time"
+            class="sun-range"
+            type="range"
+            min="6"
+            max="22"
+            step="0.25"
+            value="7.5"
+            data-sun-time
+            data-day="7.5"
+            data-night="21.5"
+          />
+          <output class="sun-out" for="sun-time" data-sun-output aria-hidden="true">7:30</output>
+        </div>
+      </div>
+
+      <p class="savestate">
+        <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#saved" /></svg>
+        Gespeichert · nur auf diesem Gerät
+      </p>
+
+      <section id="inspector" class="inspector" aria-labelledby="insp-title" tabindex="-1">
+        <button class="sheet-handle" type="button" aria-expanded="false" aria-controls="insp-body">
+          <span class="sr-only">Alle Eigenschaften zeigen</span>
+        </button>
+        <header class="insp-head">
+          <p class="insp-kicker">
+            <span data-field="room">Wohnen</span> · <span data-field="material">Bouclé</span>
+          </p>
+          <h2 id="insp-title" data-field="name">Sofa, 3-Sitzer</h2>
+          <p class="insp-dims" data-field="dims">228 × 94 × 82 cm</p>
+          <button class="icon-btn insp-more" type="button">
+            <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#more" /></svg>
+            <span class="sr-only">Weitere Aktionen</span>
+          </button>
+        </header>
+
+        <div class="insp-actions" role="group" aria-label="Schnellaktionen">
+          <button type="button">
+            <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#rotate" /></svg>
+            <span>Drehen</span>
+          </button>
+          <button type="button">
+            <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#copy" /></svg>
+            <span>Duplizieren</span>
+          </button>
+          <button type="button" class="danger">
+            <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#trash" /></svg>
+            <span>Löschen</span>
+          </button>
+        </div>
+
+        <div class="insp-body" id="insp-body">
+          <fieldset class="sizes">
+            <legend class="row-label">Maße</legend>
+            <label class="field">
+              <span class="field-label">Breite</span>
+              <span class="field-box"
+                ><input inputmode="numeric" data-field="w" value="228" /><span class="unit"
+                  >cm</span
+                ></span
+              >
+            </label>
+            <label class="field">
+              <span class="field-label">Tiefe</span>
+              <span class="field-box"
+                ><input inputmode="numeric" data-field="d" value="94" /><span class="unit"
+                  >cm</span
+                ></span
+              >
+            </label>
+            <label class="field">
+              <span class="field-label">Höhe</span>
+              <span class="field-box"
+                ><input inputmode="numeric" data-field="h" value="82" /><span class="unit"
+                  >cm</span
+                ></span
+              >
+            </label>
+          </fieldset>
+
+          <fieldset class="swatches" data-swatches>
+            <legend class="row-label">
+              Bezug <span class="row-value" data-field="swatch">Sand</span>
+            </legend>
+            <div class="swatch-row">
+              <label class="swatch sw-1"
+                ><input type="radio" name="bezug" value="--sw-1" data-name="Sand" checked /><span
+                  class="sr-only"
+                  >Sand</span
+                ></label
+              >
+              <label class="swatch sw-2"
+                ><input type="radio" name="bezug" value="--sw-2" data-name="Moos" /><span
+                  class="sr-only"
+                  >Moos</span
+                ></label
+              >
+              <label class="swatch sw-3"
+                ><input type="radio" name="bezug" value="--sw-3" data-name="Taubenblau" /><span
+                  class="sr-only"
+                  >Taubenblau</span
+                ></label
+              >
+              <label class="swatch sw-4"
+                ><input type="radio" name="bezug" value="--sw-4" data-name="Ziegel" /><span
+                  class="sr-only"
+                  >Ziegel</span
+                ></label
+              >
+              <label class="swatch sw-5"
+                ><input type="radio" name="bezug" value="--sw-5" data-name="Graphit" /><span
+                  class="sr-only"
+                  >Graphit</span
+                ></label
+              >
+            </div>
+          </fieldset>
+
+          <dl class="facts" data-facts></dl>
+
+          <div class="insp-foot">
+            <p class="price">
+              <span class="row-label">Preis</span> <span data-field="price">1.290 €</span>
+            </p>
+            <label class="check">
+              <input type="checkbox" checked />
+              <span>Auf der Einkaufsliste</span>
+            </label>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="cmdk" class="cmdk" aria-label="Befehlssuche">
+      <div class="cmdk-field">
+        <svg class="icon" aria-hidden="true"><use href="shared/icons.svg#search" /></svg>
+        <input
+          type="text"
+          role="combobox"
+          aria-expanded="true"
+          aria-controls="cmdk-list"
+          aria-autocomplete="list"
+          aria-label="Möbel, Raum oder Befehl suchen"
+          placeholder="Möbel, Raum oder Befehl suchen"
+          autocomplete="off"
+        />
+        <kbd class="cmdk-esc">Esc</kbd>
+      </div>
+      <ul id="cmdk-list" role="listbox" aria-label="Ergebnisse"></ul>
+      <p class="cmdk-hint">
+        <span><kbd>↑</kbd><kbd>↓</kbd> auswählen</span><span><kbd>Enter</kbd> ausführen</span>
+      </p>
+    </dialog>
+  </body>
+</html>

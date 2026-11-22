@@ -1,0 +1,277 @@
+/*
+ * A4 „Sonnenstand“: Verfeinerung von A „Morgenlicht“ mit deckenden Flächen.
+ * Wird nach a-morgenlicht.css geladen und ändert nur, was die Variante ausmacht.
+ *
+ * Farbe und Schrift: wie A (Kalkweiß, Schiefer, Fjordblau, Albert Sans).
+ * Formen: kein Milchglas. Alle Bedienflächen sind deckend mit feiner Kante, damit über echtem
+ * 3D nichts weichgezeichnet werden muss (spart Leistung auf Android-Mittelklasse).
+ * Licht: wird zum Werkzeug. Ein Tageszeit-Regler lässt die Sonne durch die Fenster wandern,
+ * am Abend gehen die Lampen an. Die Fensterbilder sind scharf gezeichnet.
+ */
+
+:root {
+  --light-model: windows;
+  --sun-time: 7.5;
+  --card-safe-bottom: 92px;
+
+  --surface: #fbfcfb;
+  --surface-solid: #ffffff;
+  --surface-sunk: #eff2f0;
+  --edge: rgb(30 42 47 / 0.12);
+  --sun: #f5cf68;
+  --sunlight: #fff6d8;
+  --shadow-float: 0 1px 2px rgb(30 58 70 / 0.08), 0 8px 20px -10px rgb(30 58 70 / 0.22);
+  --shadow-card: 0 1px 2px rgb(30 58 70 / 0.08), 0 18px 40px -16px rgb(30 58 70 / 0.28);
+  --backdrop: rgb(30 42 47 / 0.42);
+}
+
+:root[data-theme='dark'] {
+  --surface: #1f282c;
+  --surface-solid: #253034;
+  --surface-sunk: #2c383d;
+  --surface-hover: #344247;
+  --edge: rgb(232 238 236 / 0.1);
+  --sun: #f3c77a;
+  --shadow-float: 0 1px 2px rgb(0 0 0 / 0.35), 0 8px 22px -10px rgb(0 0 0 / 0.6);
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.35), 0 22px 50px -18px rgb(0 0 0 / 0.7);
+  --backdrop: rgb(5 8 10 / 0.72);
+}
+
+/* ---------------------------------------------------------------- Deckende Flächen */
+
+.steps ol,
+.search,
+.top-actions > .icon-btn,
+.toolbar,
+.seg,
+.zoom,
+.sunbar,
+.inspector,
+.cmdk {
+  backdrop-filter: none;
+  box-shadow:
+    0 0 0 1px var(--edge),
+    var(--shadow-float);
+}
+.inspector,
+.cmdk {
+  background: var(--surface-solid);
+  box-shadow:
+    0 0 0 1px var(--edge),
+    var(--shadow-card);
+}
+.inspector::before {
+  box-shadow: -1px 1px 0 var(--edge);
+}
+.inspector[data-side='left']::before {
+  box-shadow: 1px -1px 0 var(--edge);
+}
+.cmdk::backdrop {
+  backdrop-filter: none;
+}
+.seg button[aria-pressed='true'],
+.step[aria-current='step'] {
+  background: var(--surface-sunk);
+  box-shadow: inset 0 0 0 1px var(--edge);
+}
+
+/* ---------------------------------------------------------------- Tageszeit-Regler */
+
+.viewbar {
+  left: calc(50% - 60px);
+}
+
+.sunbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 16px 0 13px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 550;
+}
+.sunbar .icon {
+  --icon-size: 18px;
+  color: color-mix(in oklab, var(--sun), var(--ink) 50%);
+}
+:root[data-theme='dark'] .sunbar .icon {
+  color: var(--sun);
+}
+:root[data-phase='night'] .only-day,
+:root:not([data-phase='night']) .only-night {
+  display: none;
+}
+
+.sun-range {
+  --pos: 18.75%;
+  width: 150px;
+  height: 28px;
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
+}
+/* Verlauf des Tages: Dämmerung, Vormittag, Mittag, Abendrot, Nacht */
+.sun-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    #e9b77c 0%,
+    #f6dc8f 14%,
+    #fbefc8 42%,
+    #f7d98a 72%,
+    #e59a62 88%,
+    #3f4a6b 100%
+  );
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
+}
+.sun-range::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    #e9b77c 0%,
+    #f6dc8f 14%,
+    #fbefc8 42%,
+    #f7d98a 72%,
+    #e59a62 88%,
+    #3f4a6b 100%
+  );
+}
+.sun-range::-webkit-slider-thumb {
+  width: 22px;
+  height: 22px;
+  margin-top: -8px;
+  border: 2px solid color-mix(in oklab, var(--sun), var(--ink) 58%);
+  border-radius: 999px;
+  background: var(--sun);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sun) 30%, transparent);
+  appearance: none;
+  transition: box-shadow 0.3s var(--ease);
+}
+.sun-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: 2px solid color-mix(in oklab, var(--sun), var(--ink) 58%);
+  border-radius: 999px;
+  background: var(--sun);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sun) 30%, transparent);
+}
+.sun-range:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--sun) 34%, transparent);
+}
+:root[data-phase='night'] .sun-range::-webkit-slider-thumb {
+  background: #dfe5f2;
+  border-color: #3f4a6b;
+  box-shadow: 0 0 0 4px rgb(223 229 242 / 0.25);
+}
+.sun-range:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+.sun-out {
+  min-width: 2.9em;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  text-align: right;
+}
+
+/* ---------------------------------------------------------------- Licht */
+
+/* Tag: scharfe Fensterbilder mit Schein, der Rest liegt leicht im Schatten */
+:root[data-phase='day'] .house .sunlight {
+  display: inline;
+  fill: var(--sunlight);
+}
+:root[data-phase='day'] .house .sun-bloom {
+  display: inline;
+  fill: #ffe39a;
+  opacity: 0.6;
+  filter: url(#soft-blur);
+}
+:root[data-phase='day'] .house .day-veil {
+  display: inline;
+  fill: #1e3a46;
+  opacity: 0.08;
+}
+:root[data-theme='dark'][data-phase='day'] .house .sunlight {
+  fill: #e6c27a;
+  opacity: 0.55;
+}
+
+/* Abend: Lampen an, die Wohnung wird etwas dunkler */
+:root[data-phase='night'] .house .night-veil {
+  display: inline;
+  fill: #0d1418;
+  opacity: 0.22;
+}
+:root[data-theme='dark'][data-phase='night'] .house .night-veil {
+  opacity: 0.32;
+}
+:root[data-phase='night'] .house .lamp-pools,
+:root[data-phase='night'] .house .lamp-cones {
+  display: inline;
+  mix-blend-mode: screen;
+}
+.house .pool-stop-0 {
+  stop-color: #ffd98f;
+  stop-opacity: 0.66;
+}
+.house .pool-stop-1 {
+  stop-color: #ffcf7f;
+  stop-opacity: 0.28;
+}
+.house .pool-stop-2 {
+  stop-color: #ffcf7f;
+  stop-opacity: 0;
+}
+.house .cone-stop-0 {
+  stop-color: #ffe7b5;
+  stop-opacity: 0.3;
+}
+.house .cone-stop-1 {
+  stop-color: #ffcf7f;
+  stop-opacity: 0.03;
+}
+.house .lamp-bulb {
+  fill: #fff0cc;
+}
+.house .lamp-cord {
+  stroke: var(--ink-2);
+  stroke-width: 1;
+}
+:root[data-phase='night']:not([data-theme='dark']) .house .m-shade {
+  --c: #ffe1a6;
+}
+
+/* ---------------------------------------------------------------- Handy */
+
+@media (max-width: 720px) {
+  .viewbar {
+    left: auto;
+  }
+  .sunbar {
+    position: fixed;
+    left: 12px;
+    top: 72px;
+    height: 40px;
+    gap: 8px;
+    padding: 0 12px 0 11px;
+  }
+  .sun-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .sun-range {
+    width: 112px;
+  }
+}

@@ -1,0 +1,261 @@
+/*
+ * Eigenschaftenkarte (aus A4 „Sonnenstand“): am PC eine deckende Karte mit Spitze neben dem Objekt,
+ * auf dem Handy ein Blatt von unten, das sich ziehen lässt.
+ */
+
+@layer components {
+  .wb-card {
+    position: absolute;
+    z-index: var(--z-card);
+    width: var(--card-width);
+    padding: var(--space-4-5) var(--space-4-5) var(--space-4);
+    border-radius: var(--radius-2xl);
+    background: var(--color-surface-raised);
+    box-shadow: var(--elevation-card);
+    outline: none;
+  }
+
+  .wb-card:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  /* Spitze zum Objekt */
+  .wb-card::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--tail-y, 60px) - 7px);
+    width: 14px;
+    height: 14px;
+    border-radius: var(--radius-xs);
+    background: inherit;
+    rotate: 45deg;
+  }
+
+  .wb-card[data-side='right']::before {
+    left: -6px;
+    box-shadow: -1px 1px 0 var(--color-edge);
+  }
+
+  .wb-card[data-side='left']::before {
+    right: -6px;
+    box-shadow: 1px -1px 0 var(--color-edge);
+  }
+
+  .wb-card[data-side='none']::before {
+    display: none;
+  }
+
+  /* ------------------------------------------------------------ Kopf */
+
+  .wb-card-head {
+    position: relative;
+    display: grid;
+    gap: var(--space-0-5);
+    padding-right: var(--control-m);
+  }
+
+  .wb-card-kicker {
+    color: var(--color-ink-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    letter-spacing: 0.01em;
+  }
+
+  .wb-card-title {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+  }
+
+  .wb-card-dimensions {
+    color: var(--color-ink-muted);
+    font-size: var(--text-s);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wb-card-more {
+    position: absolute;
+    top: calc(-1 * var(--space-1-5));
+    right: calc(-1 * var(--space-2));
+  }
+
+  /* ------------------------------------------------------------ Schnellaktionen */
+
+  .wb-card-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-1-5);
+    margin: var(--space-3-5) 0 var(--space-4);
+  }
+
+  /* ------------------------------------------------------------ Körper */
+
+  .wb-card-body {
+    display: grid;
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .wb-row-label {
+    display: block;
+    margin-bottom: var(--space-2);
+    color: var(--color-ink-muted);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+  }
+
+  .wb-row-value {
+    margin-left: var(--space-1);
+    color: var(--color-ink);
+    font-weight: var(--weight-medium);
+  }
+
+  .wb-row-value::before {
+    content: '· ';
+    color: var(--color-ink-muted);
+  }
+
+  .wb-facts {
+    display: grid;
+    gap: var(--space-1-5);
+  }
+
+  .wb-facts > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    font-size: var(--text-s);
+  }
+
+  .wb-facts dt {
+    color: var(--color-ink-muted);
+  }
+
+  .wb-facts dd {
+    font-weight: var(--weight-semibold);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .wb-card-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-top: var(--space-3-5);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .wb-price {
+    display: grid;
+  }
+
+  .wb-price .wb-row-label {
+    margin: 0;
+  }
+
+  .wb-price-value {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: var(--tracking-snug);
+  }
+
+  /* ------------------------------------------------------------ Handy: Blatt von unten */
+
+  .wb-sheet {
+    inset: auto 0 0;
+    z-index: var(--z-sheet);
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    max-height: calc(100% - 72px);
+    padding: 0 var(--space-4-5) calc(var(--space-5) + env(safe-area-inset-bottom));
+    border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+    box-shadow: var(--elevation-sheet);
+    translate: 0 0;
+  }
+
+  .wb-sheet[data-state='peek'] {
+    translate: 0 calc(100% - var(--sheet-peek));
+  }
+
+  /* Beim Ziehen folgt das Blatt dem Finger ohne Verzögerung */
+  .wb-sheet[data-dragging='true'] {
+    user-select: none;
+  }
+
+  .wb-sheet::before {
+    display: none;
+  }
+
+  .wb-sheet-handle {
+    position: relative;
+    flex: none;
+    width: 100%;
+    height: 26px;
+    border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .wb-sheet-handle::before {
+    content: '';
+    position: absolute;
+    top: var(--space-2-5);
+    left: 50%;
+    width: 40px;
+    height: 5px;
+    border-radius: var(--radius-pill);
+    background: var(--color-line-strong);
+    translate: -50% 0;
+  }
+
+  .wb-sheet-handle:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .wb-sheet[data-dragging='true'] .wb-sheet-handle {
+    cursor: grabbing;
+  }
+
+  .wb-sheet-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .wb-sheet .wb-card-head {
+    touch-action: none;
+  }
+
+  .wb-sheet .wb-card-title {
+    font-size: var(--text-xl);
+  }
+
+  .wb-sheet .wb-card-actions {
+    margin: var(--space-3) 0 var(--space-4-5);
+  }
+
+  .wb-sheet .wb-card-actions .wb-button {
+    height: 54px;
+  }
+
+  .wb-sheet .wb-card-body {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    /* Der Scrollbereich schneidet ab: seitlich Luft für Auswahlringe und Fokusrahmen */
+    margin-inline: calc(-1 * var(--space-2));
+    padding-inline: var(--space-2);
+    /* Trennlinie so breit wie die übrigen, nicht über das Polster hinaus */
+    border-top: 0;
+    background: linear-gradient(var(--color-line), var(--color-line)) center top /
+      calc(100% - 2 * var(--space-2)) 1px no-repeat;
+  }
+}

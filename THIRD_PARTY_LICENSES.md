@@ -2,19 +2,21 @@
 
 Wandelbar selbst steht unter der MIT-Lizenz (siehe `LICENSE`). Diese Datei listet fremde Software und Inhalte, die Wandelbar nutzt.
 
-Die vollständigen Lizenztexte aller Pakete, die in die App eingebündelt werden, erzeugt der Build automatisch als `third-party-licenses.md` (Vite-Option `build.license`). Diese Datei wird mit der App veröffentlicht, zum Beispiel unter `…/wandelbar/third-party-licenses.md`.
+Die vollständigen Lizenztexte aller Pakete, die in die App eingebündelt werden, erzeugt der Build automatisch als `third-party-licenses.md` (Vite-Option `build.license`). Schriften erfasst diese Option nicht; ihre OFL-Texte legt der Build zusätzlich unter `licenses/` ab (z. B. `licenses/albert-sans-OFL.txt`). Diese Datei wird mit der App veröffentlicht, zum Beispiel unter `…/wandelbar/third-party-licenses.md`.
 
 **Pflege:** Bei jeder neuen Abhängigkeit, jeder Schrift und jedem Inhalt (Texturen, Modelle, HDRs, Testpläne) wird diese Datei ergänzt.
 
 ## In der ausgelieferten App enthalten
 
-| Paket                                                                 | Version | Lizenz | Rechteinhaber                       |
-| --------------------------------------------------------------------- | ------- | ------ | ----------------------------------- |
-| react                                                                 | 19.3    | MIT    | Meta Platforms, Inc. and affiliates |
-| react-dom                                                             | 19.3    | MIT    | Meta Platforms, Inc. and affiliates |
-| scheduler (über react-dom)                                            | 0.28    | MIT    | Meta Platforms, Inc. and affiliates |
-| workbox-window                                                        | 7.4     | MIT    | Google LLC                          |
-| workbox-core, workbox-precaching, workbox-routing (im Service Worker) | 7.4     | MIT    | Google LLC                          |
+| Paket                                                                               | Version | Lizenz  | Rechteinhaber                       |
+| ----------------------------------------------------------------------------------- | ------- | ------- | ----------------------------------- |
+| react                                                                               | 19.3    | MIT     | Meta Platforms, Inc. and affiliates |
+| react-dom                                                                           | 19.3    | MIT     | Meta Platforms, Inc. and affiliates |
+| scheduler (über react-dom)                                                          | 0.28    | MIT     | Meta Platforms, Inc. and affiliates |
+| workbox-window                                                                      | 7.4     | MIT     | Google LLC                          |
+| workbox-core, workbox-precaching, workbox-routing (im Service Worker)               | 7.4     | MIT     | Google LLC                          |
+| lucide-react (Icons)                                                                | 1.72    | ISC     | Lucide Contributors                 |
+| @fontsource-variable/albert-sans (Schrift Albert Sans, Latein und Latein erweitert) | 5.3     | OFL-1.1 | The Albert Sans Project Authors     |
 
 ## Nur Entwicklungswerkzeuge (nicht in der App enthalten)
 
@@ -30,10 +32,25 @@ Die vollständigen Lizenztexte aller Pakete, die in die App eingebündelt werden
 
 axe-core steht unter der MPL-2.0. Es wird nur in den Tests verwendet, nicht verändert und nicht mit der App ausgeliefert.
 
+## Nur Design-Entwürfe (`design/explorations/`, nicht in der App enthalten)
+
+Schriften, lokal als WOFF2 abgelegt, nur lateinische Zeichen inklusive Umlauten. Quelle sind die npm-Pakete `@fontsource-variable/*` 5.3.0. Die Lizenztexte liegen jeweils daneben als `*-OFL.txt`.
+
+| Schrift     | Datei                                       | Größe | Lizenz  | Rechteinhaber                   |
+| ----------- | ------------------------------------------- | ----- | ------- | ------------------------------- |
+| Albert Sans | `fonts/albert-sans-latin-wght-normal.woff2` | 32 KB | OFL-1.1 | The Albert Sans Project Authors |
+| Archivo     | `fonts/archivo-latin-wdth-normal.woff2`     | 90 KB | OFL-1.1 | The Archivo Project Authors     |
+| Fredoka     | `fonts/fredoka-latin-wdth-normal.woff2`     | 68 KB | OFL-1.1 | The Fredoka Project Authors     |
+| Nunito      | `fonts/nunito-latin-wght-normal.woff2`      | 39 KB | OFL-1.1 | The Nunito Project Authors      |
+
+Die Icons und die Puppenhaus-Darstellung der Entwürfe sind eigene Arbeit (MIT wie das Projekt).
+
 ## Inhalte
 
-| Inhalt                                              | Herkunft                    | Lizenz                |
-| --------------------------------------------------- | --------------------------- | --------------------- |
-| App-Icon (vorläufig, `public/favicon.svg` und PNGs) | eigene Arbeit für Wandelbar | MIT (wie das Projekt) |
+| Inhalt                                                                      | Herkunft                    | Lizenz                |
+| --------------------------------------------------------------------------- | --------------------------- | --------------------- |
+| App-Icon (vorläufig, `public/favicon.svg` und PNGs)                         | eigene Arbeit für Wandelbar | MIT (wie das Projekt) |
+| Icon „Grundriss“ im Stil von Lucide (`src/ui/icons/icons.ts`)               | eigene Arbeit für Wandelbar | MIT (wie das Projekt) |
+| Beispielwohnzimmer und Stofffarben der Übersichtsseite (`src/ui/showcase/`) | eigene Arbeit für Wandelbar | MIT (wie das Projekt) |
 
 Geplant laut `docs/PLAN.md`: Texturen von ambientCG und Poly Haven (CC0), CubiCasa5k-Modell (CC BY-NC 4.0, mit Quellenangabe), selbst gehostete Schriften über @fontsource (jeweils eigene freie Lizenz). Sie werden hier eingetragen, sobald sie hinzukommen.
